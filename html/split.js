@@ -21,16 +21,19 @@
     reader.onload=()=>{
       let img=new Image()
       img.src=reader.result
-      container.appendChild(img)
       img.onload=()=>{
         console.log(img.width+''+img.height)
-        ctx.drawImage(img,0,0)
+        show_ctx.drawImage(img,0,0)
       }
     }
   }
 let fuck=document.getElementById('fuck')
 fuck.onclick=()=>{
   console.log('click')
+  console.log(input.value)
+  //画布里绘制画布非content
+  //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+  split_ctx.drawImage(show,0,0)
 }
-let canvas =document.getElementById('split') 
-let ctx=canvas.getContext('2d')
+let show_ctx=document.getElementById('show').getContext('2d')
+let split_ctx=document.getElementById('split').getContext('2d')
