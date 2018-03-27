@@ -22,7 +22,15 @@
       let img=new Image()
       img.src=reader.result
       container.appendChild(img)
+      img.onload=()=>{
+        console.log(img.width+''+img.height)
+        ctx.drawImage(img,0,0)
+      }
     }
   }
+let fuck=document.getElementById('fuck')
+fuck.onclick=()=>{
+  console.log('click')
+}
 let canvas =document.getElementById('split') 
 let ctx=canvas.getContext('2d')
