@@ -37,3 +37,7 @@ fuck.onclick=()=>{
 }
 let show_ctx=document.getElementById('show').getContext('2d')
 let split_ctx=document.getElementById('split').getContext('2d')
+//测试补全----------------------
+//let test_number=1
+//let number_to_string=test_number.toStrin
+
