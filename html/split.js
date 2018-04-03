@@ -23,7 +23,22 @@
       img.src=reader.result
       img.onload=()=>{
         console.log(img.width+''+img.height)
+//        for( canvas in ["show","swap","split"]){
+//        eval(canvas+".width=img.width")
+//        eval(canvas+".height=img.height")
+//        eval(canvas+"_ctx.drawImage(img,0,0)")
+//        }
+//        尝试失败
+        show.width=img.width
+        show.height=img.height
         show_ctx.drawImage(img,0,0)
+        swap.width=img.width
+        swap.height=img.height
+        swap_ctx.drawImage(img,0,0)
+        split.width=img.width
+        split.height=img.height
+        split_ctx.drawImage(img,0,0)
+
       }
     }
   }
@@ -35,8 +50,9 @@ fuck.onclick=()=>{
   //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
   split_ctx.drawImage(show,0,0)
 }
-let show_ctx=document.getElementById('show').getContext('2d')
-let split_ctx=document.getElementById('split').getContext('2d')
+let show_ctx=show.getContext('2d')
+let swap_ctx=swap.getContext('2d')
+let split_ctx=split.getContext('2d')
 //测试补全----------------------
 //let test_number=1
 //let number_to_string=test_number.toStrin
