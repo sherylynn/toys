@@ -60,6 +60,13 @@ fuck.onclick=()=>{
   for (let j=2;j<size;j=j+2){
     swap_ctx.drawImage(show,(j-1)*cw,0,cw,ah,(j/2+size/2-1)*cw,0,cw,ah)
   }
+  split_ctx.drawImage(swap,0,0)
+  for (let i=1;i<size;i=i+2){
+    split_ctx.drawImage(swap,0,(i-1)*ch,aw,ch,0,(i-1)/2*ch,aw,ch)
+  }
+  for (let j=2;j<size;j=j+2){
+    split_ctx.drawImage(swap,0,(j-1)*ch,aw,ch,0,(j/2+size/2-1)*ch,aw,ch)
+  }
 }
 let show_ctx=show.getContext('2d')
 let swap_ctx=swap.getContext('2d')
