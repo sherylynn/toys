@@ -1,0 +1,9 @@
+"learn from emacs
+func! FuckVim()
+  ":tabnew<CR>
+  :sp _buffer<CR>
+  ":b _buffer<CR>
+  :normal ihello
+  :r !whoami
+endfunc 
+nnoremap <leader>fv :call FuckVim()<CR>

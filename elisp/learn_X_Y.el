@@ -10,3 +10,17 @@
 ;;C+s search forward vim:/ C+r search backward vim:?
 ;;C+r in bash
 (insert "hello!")
+(insert "hello, I am " my-name)
+(defun hello () (insert "hello , I am " my-name))
+(hello)
+(defun hello (name) (insert "hello" name))
+(hello "you")
+(switch-to-buffer-other-window "*test*")
+(progn
+  (switch-to-buffer-other-window "*test*")
+  (hello "you"))
+;;let me think of vim. vim can toggle a new buffer and show thing new
+(progn
+  (switch-to-buffer-other-window "*test*")
+  (erase-buffer)
+  (hello "there"))
