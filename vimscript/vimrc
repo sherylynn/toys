@@ -2,8 +2,16 @@
 func! FuckVim()
   ":tabnew<CR>
   :sp _buffer<CR>
+  :normal dd=G
   ":b _buffer<CR>
   :normal ihello
   :r !whoami
+  "ggJ go to top and join second line
+  :normal ggJ
+  "想返回之前的窗口，但是normal中不生效
+  ":normal <C-w>k
+  exec "<C-w>k"
+  "back to editfile before
+  ":e#
 endfunc 
 nnoremap <leader>fv :call FuckVim()<CR>
