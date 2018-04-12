@@ -101,3 +101,12 @@
                          (list 'face 'bold)))
   (other-widow 1))
 (boldify-names)
+;;-----------------------------------------
+(defun show-hello-world ()
+  (interactive);;交互式函数
+  (switch-to-buffer-other-window "*message*")
+  (erase-buffer)
+  (insert "hello world")
+  (other-window 1))
+(show-hello-world)
+(global-set-key (kbd "<f2>") 'show-hello-world);;简单的绑定了按键
