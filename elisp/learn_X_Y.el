@@ -38,5 +38,22 @@
 (format "hello %s!\n" "visitor")
 
 (defun hello (name)
-  (insert (format "hello %s!\n" name))
+  (insert (format "hello %s!\n" name)))
 (hello "great")
+(defun greating (name)
+  (let ((your-name "lynn"))
+    (insert (format "hello %s!\n\nI am %s"
+                    name
+                    your-name
+                    ))))
+(defun greating (name)
+  (let ((your-name "lynn"))
+    (switch-to-buffer-other-window "*message*")
+    (insert (format "hello %s!\n\nI am %s"
+                    name
+                    your-name
+                    ))
+    (other-window 1)
+    ))
+(greating "master")
+;;lisp can very easy to achieve new feature
