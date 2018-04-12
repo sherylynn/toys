@@ -46,14 +46,58 @@
                     name
                     your-name
                     ))))
-(defun greating (name)
-  (let ((your-name "lynn"))
+(defun  greeting (from-name)
+  (let ((your-name (read-from-minibuffer "Enter your name ")))
+    (insert (format "hello \n\nI am %s and you are %s"
+                    from-name
+                    your-name
+                    ))))
+(greeting "lynn")
+(defun greating (from-name)
+  (let ((your-name (read-from-minibuffer "Enter your name: ")))
     (switch-to-buffer-other-window "*message*")
     (insert (format "hello %s!\n\nI am %s"
-                    name
+                    from-name
                     your-name
                     ))
     (other-window 1)
     ))
 (greating "master")
 ;;lisp can very easy to achieve new feature
+(setq list-of-names '("Tom" "lynn" "sherylynn"))
+(car list-of-names)
+(cdr list-of-names)
+(push "sherython" list-of-names)
+(mapcar 'hello list-of-names)
+;;强悍的lisp开始展露出来
+(defun greeting ()
+  (switch-to-buffer-other-window "*test*")
+  (erase-buffer)
+  (mapcar 'hello list-of-names)
+  (other-window 1))
+(greeting)
+(defun replace-hello-by-bonjour ()
+  (switch-to-buffer-other-window "*test*")
+  (goto-char (point-min))
+  (while (search-forward "hello")
+    (replace-match "bonjour"))
+  (other-window 1))
+(replace-hello-by-bonjour)
+(defun hello-to-bonjour ()
+  (switch-to-buffer-other-window "*test*")
+  (erase-buffer)
+  (mapcar 'hello list-of-names)
+  (goto-char (point-min))
+  (while (search-forward "hello" nil 't)
+    (replace-match "bonjour"))
+  (other-window 1))
+(hello-to-bonjour)
+(defun boldify-names ()
+  (switch-to-buffer-other-window "*test*")
+  (goto-char (point-min))
+  (while (re-search-forward "bonjour \\(.+\\)!" nil 't)
+    (add-text-properties (match-beginning 1)
+                         (match-end 1)
+                         (list 'face 'bold)))
+  (other-widow 1))
+(boldify-names)
