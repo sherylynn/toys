@@ -110,3 +110,12 @@
   (other-window 1))
 (show-hello-world)
 (global-set-key (kbd "<f2>") 'show-hello-world);;简单的绑定了按键
+(defun define (fuck)
+  (defun 'fuck ()
+    (message "1")))
+(define fuck_you ())
+(defun yes (a b)
+  (insert a)
+  (insert b))
+(yes 1 2)
+(a)
