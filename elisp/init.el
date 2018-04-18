@@ -26,8 +26,10 @@
 ;;打开全局的数字模式
 (global-linum-mode t)
 ;;改变光标成细条
-(setq cursor-type 'bar)
-(custom-set-variables
+(setq-default cursor-type 'bar)
+;;关闭自动备份文件
+(setq-default make-backup-files nil)
+(custom-set-variables 
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
@@ -39,3 +41,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+;;c-x 1 单屏
+;;c-x 2 下方分屏
+;;c-x 3 右方分屏
