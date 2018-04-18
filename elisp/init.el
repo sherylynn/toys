@@ -29,6 +29,26 @@
 (setq-default cursor-type 'bar)
 ;;关闭自动备份文件
 (setq-default make-backup-files nil)
+;;c-x 1 单屏
+;;c-x 2 下方分屏
+;;c-x 3 右方分屏
+;;本来说添加了后org里就有语法高亮，不知道为什么添加了没有，后来发现需要在<s 加tab加emacs-lisp结构里
+(require 'org)
+(setq org-src-fontify-natively t)
+(require 'recentf)
+;;打开最近文件
+(recentf-mode 1)
+;;选中词后直接替换
+(delete-selection-mode t)
+(setq recentf-max-menu-items 25)
+;;设置热键
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+;;执行部分c-x c-e
+;;执行全部m-x eval-buffer
+;;直接全屏
+(setq initial-frame-alist (quote ((fullscreen . maximized))))
+;;加钩子显示匹配代码
+(add-hook 'emacs-lisp-mode-hook 'show-paren-mode)
 (custom-set-variables 
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -41,6 +61,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-;;c-x 1 单屏
-;;c-x 2 下方分屏
-;;c-x 3 右方分屏
+
