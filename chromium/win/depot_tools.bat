@@ -32,3 +32,9 @@ remove_webcore_debug_symbols = true
 symbol_level = 1
 ::start build
 autoninja -C out\test chrome
+::for release
+gn args out/build
+::
+is_debug = false
+is_component_build = false
+autoninja -C out\build chrome
