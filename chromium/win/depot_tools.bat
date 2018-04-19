@@ -1,4 +1,7 @@
 ::set path for depot_tools first
+::如果原来有GYP_MSVS_VERSION=2015的环境变量，记得删去
+::看到官网的set DEPOT_TOOLS_WIN_TOOLCHAIN=0 不知道要不要
+::万一下载失败，可以gclient sync
 :: go to admin cmd depot_tools path
 set http_proxy=http://127.0.0.1:10808/
 set https_proxy=http://127.0.0.1:10808/
@@ -15,3 +18,4 @@ mkdir chromium && cd chromium
 fetch chromium
 ::fast
 fetch --no-history chromium 
+
