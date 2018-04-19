@@ -21,4 +21,14 @@ mkdir chromium && cd chromium
 fetch chromium
 ::fast
 fetch --no-history chromium 
-
+cd src
+gn args out/test
+::然后输入自己的api，然后一些优化设置
+::#fast build
+use_jumbo_build = true
+is_component_build = true
+::# no debug for just use
+remove_webcore_debug_symbols = true
+symbol_level = 1
+::start build
+autoninja -C out\test chrome
