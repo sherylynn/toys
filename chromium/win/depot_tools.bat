@@ -38,3 +38,38 @@ gn args out/build
 is_debug = false
 is_component_build = false
 autoninja -C out\build chrome
+::------------------------------
+::上面的没产出，又大又久
+::学习别人的
+gn args out\release
+
+use_jumbo_build = true
+chrome_pgo_phase = 0
+current_cpu = "x64"
+enable_google_now = false
+enable_hotwording = false
+enable_iterator_debugging = false
+enable_nacl = true
+ffmpeg_branding = "Chrome"
+is_component_build = false
+is_debug = false
+is_win_fastlink = true
+proprietary_codecs = true
+symbol_level = 0
+syzygy_optimize = true
+target_cpu = "x64"
+exclude_unwind_tables = true
+remove_webcore_debug_symbols = true
+proprietary_codecs = true
+enable_hangout_services_extension = true
+enable_ac3_eac3_audio_demuxing = true
+enable_hevc_demuxing = true
+enable_mse_mpeg2ts_stream_parser = true
+enable_webrtc = true
+enable_widevine = true
+rtc_use_h264 = true
+rtc_use_lto = true
+use_openh264 = true
+::-------
+autoninja -C out/release mini_installer.exe
+::test 和最后的版本要编译的东西都比较小，build比较大
