@@ -2,6 +2,7 @@ augroup NodeJS
   autocmd!
   if !exists("*NodeJSable")
     func! NodeJSable(dir,filename)
+      "其实这里的功能也可以直接用vim内置的 isdirectory 或者 filereadable
       let l:dir_command='ls ' . a:dir
       "注意，这里检索不到package.json的时候依然会出现  ls: cannot access 'package.json': No such file or directory ,
       "依然检索package.json永远会检测到
