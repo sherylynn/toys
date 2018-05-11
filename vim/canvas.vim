@@ -19,17 +19,21 @@ function! s:drawChar(x, y, char)
 endfunction
 func! s:help()
   let l:loop=1
-"  while l:loop==1
-    let l:input = nr2char(getchar())
+  tabedit __canvas__
+  while l:loop==1
+    call s:drawCanvas(10,10)
+"    let l:input = getchar(0)
+    let l:input = nr2char(getchar(0))
     execute "normal! G"
     call s:drawChar(1,2,l:input)
     if l:input == 'q'
       let l:loop = 0
-"      bdelete!
+      bdelete!
     endif
+    call s:setColor()
     sleep 100ms
     redraw
-"  endwhile
+  endwhile
 endfunc
 function! s:setLocalSetting()
     setlocal bufhidden=wipe
@@ -48,9 +52,7 @@ function! s:setColor()
     syntax match canvas '　'
     highlight canvas ctermfg=white ctermbg=white guifg=white guibg=white
 endfunction
-"call s:help()
-call s:drawCanvas(10,10)
+call s:help()
 "call s:setLocalSetting()
-call s:setColor()
 "　
 "😀
