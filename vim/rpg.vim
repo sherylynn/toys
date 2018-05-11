@@ -27,22 +27,6 @@ func! s:help()
   tabedit __canvas__
   while l:loop==1
     call s:drawCanvas(10,10)
-"    let l:input = getchar(0)
-    let l:input = nr2char(getchar(0))
-    if l:input == 'h'
-      let l:direction = 'left'
-    elseif l:input == 'j'
-      let l:direction = 'down'
-    elseif l:input == 'k'
-      let l:direction = 'up'
-    elseif l:input == 'l'
-      let l:direction = 'right'
-    elseif l:input == 'q'
-      let l:loop = 0
-      bdelete!
-    else
-    endif
-"    call s:drawChar(1,2,l:direction)
     call s:drawChar(1,2,'我')
     call s:setColor()
     sleep 30ms
@@ -71,3 +55,8 @@ call s:help()
 "call s:setLocalSetting()
 "　
 "😀
+"头上显示角色名,用map替换原生按键事件
+"角色属性分icon name x y move-type
+"icon是绘制字符
+"name是头上字,一起移动
+"建立组合移动函数
