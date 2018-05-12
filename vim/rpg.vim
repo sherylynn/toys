@@ -17,7 +17,7 @@ endfunction
 function! s:drawClear(x, y, tx, ty, char)
     execute "normal! " . a:y . 'gg0' . a:x . 'lr' . a:char . 'gg0'
 endfunction
-let g:player={'x':2,'y':2,'icon':'我','name':'＊'}
+let g:player={'x':2,'y':2,'icon':'我','name':'Ｌ'}
 function! s:drawRole(role)
   call s:drawChar(a:role.x,a:role.y,a:role.icon)
   call s:drawChar(a:role.x,a:role.y-1,a:role.name)
@@ -85,6 +85,7 @@ func! s:help()
     endif
     call s:drawCanvas(15,15)
     call s:drawRole(g:player)
+    call s:setLocalSetting()
     call s:setColor()
     sleep 30ms
     redraw
@@ -92,6 +93,8 @@ func! s:help()
 endfunc
 "nnoremap h 
 function! s:setLocalSetting()
+		setlocal undolevels=-1
+    "取消undo,性能优化
     setlocal bufhidden=wipe
     setlocal buftype=nofile
     setlocal buftype=nowrite
@@ -109,7 +112,7 @@ function! s:setColor()
 "    syntax match player '我'
     syntax match player '我'
     syntax match canvas ' '
-    highlight canvas ctermfg=white ctermbg=white guifg=white guibg=white
+"    highlight canvas ctermfg=white ctermbg=white guifg=white guibg=white
     highlight player ctermfg=green ctermbg=green guifg=green guibg=green
 endfunction
 call s:help()
@@ -124,3 +127,4 @@ call s:help()
 "再构建一个画图工具,专门画地图,然后保存后就是地图和事件了
 "可以专门建个事件图层,背后载入buffer,然后比对角色位置,进行判断
 "把按键放map里不生效
+"undo
