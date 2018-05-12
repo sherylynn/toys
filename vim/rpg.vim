@@ -17,22 +17,80 @@ endfunction
 function! s:drawClear(x, y, tx, ty, char)
     execute "normal! " . a:y . 'gg0' . a:x . 'lr' . a:char . 'gg0'
 endfunction
+let g:player={'x':2,'y':2,'icon':'我','name':'＊'}
+function! s:drawRole(role)
+  call s:drawChar(a:role.x,a:role.y,a:role.icon)
+  call s:drawChar(a:role.x,a:role.y-1,a:role.name)
+endfunction
 function! s:drawChar(x, y, char)
     exe "normal! " . a:y . 'gg0' . a:x . 'lR' . a:char
     exe "normal! " . 'gg0'
 endfunction
+let g:loop=1
+"nnoremap h :call move_h()<cr>
+"nnoremap j :call move_j()<cr>
+"nnoremap k :call move_k()<cr>
+"nnoremap l :call move_l()<cr>
+"nnoremap q :call game_q()<cr>
+"func! s:move_h()
+"  let g:player.x=g:player.x-1
+"endfunc
+"func! s:move_j()
+"  let g:player.y=g:player.y+1
+"endfunc
+"func! s:move_k()
+"  let g:player.y=g:player.y-1
+"endfunc
+"func! s:move_l()
+"  let g:player.x=g:player.x+1
+"endfunc
+func! s:move_h(role,step)
+  let a:role.x=a:role.x-a:step
+endfunc
+func! s:move_j(role,step)
+  let a:role.y=a:role.y+a:step
+endfunc
+func! s:move_k(role,step)
+  let a:role.y=a:role.y-a:step
+endfunc
+func! s:move_l(role,step)
+  let a:role.x=a:role.x+a:step
+endfunc
+func! s:game_q()
+  let g:loop=0
+endfunc
 func! s:help()
-  let l:loop=1
   let l:direction='none'
   tabedit __canvas__
-  while l:loop==1
-    call s:drawCanvas(10,10)
-    call s:drawChar(1,2,'我')
+  while g:loop==1
+    let l:input = nr2char(getchar(0))
+    if l:input == 'h'
+      let l:direction = 'left'
+      call s:move_h(g:player,1)
+    elseif l:input == 'j'
+      let l:direction = 'down'
+      call s:move_j(g:player,1)
+    elseif l:input == 'k'
+      let l:direction = 'up'
+      call s:move_k(g:player,1)
+    elseif l:input == 'l'
+      let l:direction = 'right'
+      call s:move_l(g:player,1)
+    elseif l:input == 'q'
+      let g:loop = 0
+      tabclose!
+"      bdelete!
+      break
+    else
+    endif
+    call s:drawCanvas(15,15)
+    call s:drawRole(g:player)
     call s:setColor()
     sleep 30ms
     redraw
   endwhile
 endfunc
+"nnoremap h 
 function! s:setLocalSetting()
     setlocal bufhidden=wipe
     setlocal buftype=nofile
@@ -48,8 +106,11 @@ function! s:setLocalSetting()
 endfunction
 function! s:setColor()
     syntax match canvas '　'
+"    syntax match player '我'
+    syntax match player '我'
     syntax match canvas ' '
     highlight canvas ctermfg=white ctermbg=white guifg=white guibg=white
+    highlight player ctermfg=green ctermbg=green guifg=green guibg=green
 endfunction
 call s:help()
 "call s:setLocalSetting()
@@ -60,3 +121,6 @@ call s:help()
 "icon是绘制字符
 "name是头上字,一起移动
 "建立组合移动函数
+"再构建一个画图工具,专门画地图,然后保存后就是地图和事件了
+"可以专门建个事件图层,背后载入buffer,然后比对角色位置,进行判断
+"把按键放map里不生效
