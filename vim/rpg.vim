@@ -17,10 +17,13 @@ endfunction
 function! s:drawClear(x, y, tx, ty, char)
     execute "normal! " . a:y . 'gg0' . a:x . 'lr' . a:char . 'gg0'
 endfunction
-let g:player={'x':2,'y':2,'icon':'我','name':'Ｌ'}
+let g:player={'x':2,'y':2,'icon':'😈','name':'Ｌ'}
+let g:NPC=[{'x':2,'y':2,'icon':'😻','name':'Ｃ'}]
+"😀😻🎁🔥💥🏠🐈🐢🐇
+let g:seed=[{'x':2,'y':7,'icon':'☀','name':'Ｃ'}]
 function! s:drawRole(role)
-  call s:drawChar(a:role.x,a:role.y,a:role.icon)
   call s:drawChar(a:role.x,a:role.y-1,a:role.name)
+  call s:drawChar(a:role.x,a:role.y,a:role.icon)
 endfunction
 function! s:drawChar(x, y, char)
     exe "normal! " . a:y . 'gg0' . a:x . 'lR' . a:char
@@ -84,6 +87,12 @@ func! s:help()
     else
     endif
     call s:drawCanvas(15,15)
+    for seed in g:seed
+      call s:drawRole(seed)
+    endfor
+    for role in g:NPC
+      call s:drawRole(role)
+    endfor
     call s:drawRole(g:player)
     call s:setLocalSetting()
     call s:setColor()
@@ -112,13 +121,14 @@ function! s:setColor()
 "    syntax match player '我'
     syntax match player '我'
     syntax match canvas ' '
+"    syntax match NPC '猫'
 "    highlight canvas ctermfg=white ctermbg=white guifg=white guibg=white
+    highlight NPC ctermfg=white ctermbg=white guifg=white guibg=white
     highlight player ctermfg=green ctermbg=green guifg=green guibg=green
 endfunction
 call s:help()
 "call s:setLocalSetting()
 "　
-"😀
 "头上显示角色名,用map替换原生按键事件
 "角色属性分icon name x y move-type
 "icon是绘制字符
@@ -128,3 +138,5 @@ call s:help()
 "可以专门建个事件图层,背后载入buffer,然后比对角色位置,进行判断
 "把按键放map里不生效
 "undo
+
+"😀😻
