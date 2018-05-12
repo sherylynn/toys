@@ -103,6 +103,7 @@ endfunc
 "nnoremap h 
 function! s:setLocalSetting()
 		setlocal undolevels=-1
+    setlocal ambiwidth=double
     "取消undo,性能优化
     setlocal bufhidden=wipe
     setlocal buftype=nofile
