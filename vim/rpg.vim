@@ -24,7 +24,7 @@ let g:NPC=[{'x':2,'y':2,'icon':g:iconList.cat,'name':'Ｃ'}]
 let g:seed=[{'x':2,'y':7,'icon':g:iconList.fire,'name':'Ｃ'}]
 let g:width=15
 let g:height=15
-let g:messages={'greeting':'hello'}
+let g:messages={'greeting':'＂欢迎来到vim世界＂'}
 function! s:drawRole(role)
   call s:drawChar(a:role.x,a:role.y-1,a:role.name)
   call s:drawChar(a:role.x,a:role.y,a:role.icon)
@@ -126,10 +126,13 @@ function! s:setColor()
     syntax match canvas '　'
 "    syntax match player '我'
     syntax match player '我'
+    "全角引号
+    syntax region messages start=/\v＂/ skip=/\v\\./ end=/\v＂/
     syntax match canvas ' '
 "    syntax match NPC '猫'
 "    highlight canvas ctermfg=white ctermbg=white guifg=white guibg=white
     highlight NPC ctermfg=white ctermbg=white guifg=white guibg=white
+    highlight messages ctermfg=blue  guifg=blue 
     highlight player ctermfg=green ctermbg=green guifg=green guibg=green
 endfunction
 call s:help()
