@@ -17,10 +17,14 @@ endfunction
 function! s:drawClear(x, y, tx, ty, char)
     execute "normal! " . a:y . 'gg0' . a:x . 'lr' . a:char . 'gg0'
 endfunction
-let g:player={'x':2,'y':2,'icon':'😈','name':'Ｌ'}
-let g:NPC=[{'x':2,'y':2,'icon':'😻','name':'Ｃ'}]
-"😀😻🎁🔥💥🏠🐈🐢🐇
-let g:seed=[{'x':2,'y':7,'icon':'☀','name':'Ｃ'}]
+let g:iconList={'player':'😈','cat':'🐈','turtle':'🐢','rabbit':'🐇','rome':'🏠','fire':'🔥'}
+let g:player={'x':2,'y':2,'icon':g:iconList.player,'name':'Ｌ'}
+let g:NPC=[{'x':2,'y':2,'icon':g:iconList.cat,'name':'Ｃ'}]
+"😀😻🎁💥
+let g:seed=[{'x':2,'y':7,'icon':g:iconList.fire,'name':'Ｃ'}]
+let g:width=15
+let g:height=15
+let g:messages={'greeting':'hello'}
 function! s:drawRole(role)
   call s:drawChar(a:role.x,a:role.y-1,a:role.name)
   call s:drawChar(a:role.x,a:role.y,a:role.icon)
@@ -86,7 +90,7 @@ func! s:help()
       break
     else
     endif
-    call s:drawCanvas(15,15)
+    call s:drawCanvas(g:width,g:height)
     for seed in g:seed
       call s:drawRole(seed)
     endfor
@@ -94,6 +98,7 @@ func! s:help()
       call s:drawRole(role)
     endfor
     call s:drawRole(g:player)
+    call s:drawChar(0,g:height,g:messages.greeting)
     call s:setLocalSetting()
     call s:setColor()
     sleep 30ms
