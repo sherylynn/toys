@@ -17,10 +17,10 @@ endfunction
 function! s:drawClear(x, y, tx, ty, char)
     execute "normal! " . a:y . 'gg0' . a:x . 'lr' . a:char . 'gg0'
 endfunction
-let g:iconList={'player':'😈','cat':'🐈','turtle':'🐢','rabbit':'🐇','rome':'🏠','fire':'🔥'}
+let g:iconList={'player':'😈','cat':'🐈','turtle':'🐢','rabbit':'🐇','rome':'🏠','fire':'🔥','spark':'💥'}
 let g:player={'x':2,'y':2,'icon':g:iconList.player,'name':'Ｌ'}
-let g:NPC=[{'x':2,'y':2,'icon':g:iconList.cat,'name':'Ｃ'}]
-"😀😻🎁💥
+let g:NPC=[{'x':2,'y':2,'icon':g:iconList.cat,'name':'Ｃ'},{'x':3,'y':3,'icon':g:iconList.spark,'name':'　','pass':0},{'x':4,'y':3,'icon':g:iconList.spark,'name':'　','pass':0}]
+"😀😻🎁
 let g:seed=[{'x':2,'y':7,'icon':g:iconList.fire,'name':'Ｃ'}]
 let g:width=15
 let g:height=15
@@ -61,7 +61,10 @@ func! s:move_k(role,step)
   let a:role.y=a:role.y-a:step
 endfunc
 func! s:move_l(role,step)
-  let a:role.x=a:role.x+a:step
+  "需要根据实际坐标弄一个getcharxy
+  if getline(a:role.y)[a:role.x+a:step]=='　'
+    let a:role.x=a:role.x+a:step
+  endif
 endfunc
 func! s:game_q()
   let g:loop=0
