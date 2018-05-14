@@ -44,3 +44,24 @@ endwhile
 echo s:canvasList
 "s:canvasList就是内存中的游戏地图
 "接下来可以考虑用摄像头的形式，只绘制这个游戏地图的局部内容，来达到摄像头的移动效果
+for ListX in s:canvasList
+  for j in ListX
+    let j='b'
+"    echom j
+  endfor
+endfor
+echo s:canvasList
+"好像let j的指针没有变，不生效
+let s:i=0
+while s:i < 10
+  let s:canvasListX[s:i]=s:blankChar
+  let s:i=s:i+1
+endwhile
+let s:i=0
+while s:i< 10
+  let s:canvasList[s:i]=s:canvasListX
+  let s:i=s:i+1
+endwhile
+echo s:canvasList
+"while的方式生效了
+"
