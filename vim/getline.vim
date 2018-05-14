@@ -27,3 +27,20 @@ echom s:findChar(2,1)
 "或许像双层canvas一样，先把数据放内存，然后操作不同字符的更新
 "然后一次性把每次的字符绘制进去，这样减少了开销
 "或者在上面的绘制再加一层diff后绘制
+let s:blankChar='　'
+"let s:blankChar='a'
+let s:canvasListX=[]
+let s:i=0
+while s:i < 10
+  call add(s:canvasListX,s:blankChar)
+  let s:i=s:i+1
+endwhile
+let s:canvasList=[]
+let s:i=0
+while s:i< 10
+  call add(s:canvasList,s:canvasListX)
+  let s:i=s:i+1
+endwhile
+echo s:canvasList
+"s:canvasList就是内存中的游戏地图
+"接下来可以考虑用摄像头的形式，只绘制这个游戏地图的局部内容，来达到摄像头的移动效果
