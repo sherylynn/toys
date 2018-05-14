@@ -64,4 +64,5 @@ while s:i< 10
 endwhile
 echo s:canvasList
 "while的方式生效了
-"
+"下步就是把canvasList如何绘制上图了
+"可以一行一行绘制
