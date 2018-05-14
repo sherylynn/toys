@@ -30,9 +30,15 @@ function! s:drawRole(role)
   call s:drawChar(a:role.x,a:role.y,a:role.icon)
 endfunction
 function! s:drawChar(x, y, char)
-    exe "normal! " . a:y . 'gg0' . a:x . 'lR' . a:char
-    exe "normal! " . 'gg0'
+    exe "normal! " . a:y . 'gg' . (a:x-1). 'lR' . a:char
 endfunction
+func! s:findChar(x,y)
+  exe "normal!" . a:y . "gg"
+  "此处得有括号，无括号会有问题
+  exe "normal!" . (a:x-1) . "l"
+  exe "normal!" . "vy"
+  return @"
+endfunc
 let g:loop=1
 "nnoremap h :call move_h()<cr>
 "nnoremap j :call move_j()<cr>
@@ -62,7 +68,7 @@ func! s:move_k(role,step)
 endfunc
 func! s:move_l(role,step)
   "需要根据实际坐标弄一个getcharxy
-  if getline(a:role.y)[a:role.x+a:step]=='　'
+  if s:findChar(a:role.x+1,a:role.y)=='　'
     let a:role.x=a:role.x+a:step
   endif
 endfunc
