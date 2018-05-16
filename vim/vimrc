@@ -1,3 +1,5 @@
+"把vimrc一点点删到0想优化一下加载速度，发现windows的 wsl里加载速度，
+"就算全裸，也是要1秒
 "learn from emacs
 func! FuckVim()
   ":tabnew<CR>
