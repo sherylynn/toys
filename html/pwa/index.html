@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width,user-scalable=no" />
+    <!--link rel="stylesheet" type="text/css" href="main.css" /-->
+    <link rel="mainfest" href="manifest.json" />
+    <title>Hellow PWA</title>
+  </head>
+  <body>
+    <!--img src="/img/hello.png" /-->
+    <h3>Revision 1</h3>
+    <div class="main-test" >Minimal PWA</div>
+    <button on-touch="clean">clean</button>
+    <script>
+      if (navigator.serviceWorker!=null){
+        navigator.serviceWorker.register('sw.js')
+        .then(function(registration){
+          console.log(registration.scope)
+        })
+      }
+    </script>
+  </body>
+</html>
