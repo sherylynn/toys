@@ -1,0 +1,12 @@
+{
+  "short_name":"edge_pwa",
+  "dir":"ltr",
+  "lang":"en-us",
+  "scope":"/",
+  "display":"browser",
+  "start_url":"/",
+  "theme_color":"transparent",
+  "backgrount_color":"transparent",
+  "orientation":"any",
+  "icons":[]
+}
