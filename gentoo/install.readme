@@ -1,0 +1,16 @@
+常规的挂载命令 mount /dev/sda2 /mnt/gentoo
+mount /dev/sda1 /mnt/gentoo/boot
+kernel 官方教程有错漏,应该按systemd的选
+后面hostname开始也有错误 amd记得选amd支持
+emerge eselect
+mount --type proc /proc /mnt/gentoo/proc
+--rbind /sys /mnt/gentoo/sys
+/dev
+--make-rslave /mnt/gentoo/sys
+/sys
+grub-install --target=i386-pc /dev/sda
+grub-install --target=x86_64-efi --eif-directory=/boot --removable
+dhcpcd
+ls /sys/class/net
+lspci |grep net
+记得备份make.conf和内核.config
