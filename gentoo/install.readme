@@ -14,3 +14,4 @@ dhcpcd
 ls /sys/class/net
 lspci |grep net
 记得备份make.conf和内核.config
+make.conf 里MAKEOPS=-j16
