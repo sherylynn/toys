@@ -1,0 +1,9 @@
+systemd
+gentoo: 需要在grub.cfg里指定 位置一般在 /usr/lib/systemd/systemd
+debian: dpkg -L systemd|grep systemd 后找到一般在/bin/systemd
+
+睡眠
+echo "mem"> /sys/power/state
+控制设备
+cat /proc/acpi/wakeup
+echo "PTXH" > /proc/acpi/wakeupc
