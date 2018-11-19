@@ -4,11 +4,11 @@
   "description": "",
   "main": "fs.js",
   "dependencies": {
-    "ejsexcel": "^3.5.2",
+    "ejsexcel": "^3.5.2"
   },
   "devDependencies": {},
   "scripts": {
-    "start":"node xlsx.js",
+    "start": "node xlsx.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
