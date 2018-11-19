@@ -4,7 +4,8 @@
   "description": "",
   "main": "fs.js",
   "dependencies": {
-    "ejsexcel": "^3.5.2"
+    "ejsexcel": "^3.5.2",
+    "xlsx": "^0.14.1"
   },
   "devDependencies": {},
   "scripts": {
