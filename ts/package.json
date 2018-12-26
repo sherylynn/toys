@@ -6,12 +6,14 @@
   "dependencies": {},
   "devDependencies": {
     "dvm": "^0.3.0",
+    "ts-node": "^7.0.1",
     "typescript": "^3.2.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"deno deno.ts",
-    "init":"dvm install 0.2.4 -r deno"
+    "deno": "deno deno.ts",
+    "start": "ts-node deno.ts",
+    "init": "dvm install 0.2.4 -r deno"
   },
   "author": "",
   "license": "ISC"
