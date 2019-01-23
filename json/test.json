@@ -1,0 +1,6 @@
+{
+  "name":"v2ray",
+  "version":"4.11.0",
+  "url":"https://github.com/v2ray/v2ray-core/releases/download/v$version/v2ray-OS-ARCH.zip",
+  "comment":"https://github.com/v2ray/v2ray-core/releases/download/v4.11.0/v2ray-linux-arm.zip"
+}
