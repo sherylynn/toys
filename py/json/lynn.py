@@ -13,6 +13,8 @@ class lynn:
         self.arch=platform.machine()
         self.os=platform.system()
         self.home=Path.home()
+        self.install_dirname="tools"
+        self.install_path=path.join(self.home,self.install_dirname)
         #os.chdir(self.home)
 
     def install(self,pack,version="default"):
@@ -27,7 +29,7 @@ class lynn:
         url_fix_os=url_fix_arch.replace("$os",self.packJson["os"][self.os])
         self.url=url_fix_os
         self.packFileName=pack+self.packVersion+"."+self.packJson["extension"]
-        os.chdir(self.home)
+        self.cd_install_dir()
         self.download(self.url,self.packFileName)
         self.unpack(self.packFileName)
 
@@ -48,6 +50,9 @@ class lynn:
         elif tarfile.is_tarfile(self.packFileName):
             with tarfile.TarFile(self.packFileName) as tarPack:
                 tarPack.extractall(self.packName)
+
+    def cd_install_dir(self):
+        os.chdir(self.install_path)
 
     def help(self):
         print('''
