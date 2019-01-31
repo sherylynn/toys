@@ -1,0 +1,9 @@
+{
+  "name":"v2ray",
+  "version":"4.11.0",
+  "url":"https://github.com/v2ray/v2ray-core/releases/download/v$version/v2ray-$os-$arch.zip",
+  "extension":"zip",
+  "arch":{"arm":"arm","armv8l":"arm","AMD64":"64"},
+  "os":{"Linux":"linux","Windows":"windows"},
+  "comment":"https://github.com/v2ray/v2ray-core/releases/download/v4.11.0/v2ray-linux-arm.zip"
+}
