@@ -5,5 +5,5 @@ myName=input()
 print("nice to meet you "+ myName)
 if myName=='lynn':
     print(greeting)
-else
+else:
     print('greeting')

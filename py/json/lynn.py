@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import json
 import os
 import shutil
@@ -14,7 +14,7 @@ class lynn:
         # info
         self.arch=platform.machine()
         self.os=platform.system()
-        self.home=Path.home()
+        self.home=str(Path.home())
         # dir
         self.install_dirname="tools"
         self.cache_dirname="caches"
@@ -38,7 +38,7 @@ class lynn:
         url_fix_arch=url_fix_version.replace("$arch",self.packJson["arch"][self.arch])
         url_fix_os=url_fix_arch.replace("$os",self.packJson["os"][self.os])
         self.url=url_fix_os
-        self.packFileName=pack+self.packVersion+"."+self.packJson["extension"]
+        self.packFileName=pack+self.arch+self.packVersion+"."+self.packJson["extension"]
         self.cd_install_dir()
         if not self.checkCache(self.packFileName):
             self.download(self.url,self.packFileName)
@@ -78,7 +78,7 @@ class lynn:
         if not os.path.exists(self.install_path):
             os.mkdir(self.install_path)
         os.chdir(self.install_path)
-        
+
     def help(self):
         print('''
 Usage:
