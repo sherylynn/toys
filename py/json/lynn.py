@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 import os
+import shutil
 from os import path
 import platform
 import zipfile
@@ -10,11 +11,20 @@ import fire
 import requests
 class lynn:
     def __init__(self):
+        # info
         self.arch=platform.machine()
         self.os=platform.system()
         self.home=Path.home()
+        # dir
         self.install_dirname="tools"
+        self.cache_dirname="caches"
         self.install_path=path.join(self.home,self.install_dirname)
+        self.cache_path=path.join(self.install_path,self.cache_dirname)
+        # mkdir
+        if not path.exists(self.install_path):
+            os.mkdir(self.install_path)
+        if not path.exists(self.cache_path):
+            os.mkdir(self.cache_path)
         #os.chdir(self.home)
 
     def install(self,pack,version="default"):
@@ -30,12 +40,21 @@ class lynn:
         self.url=url_fix_os
         self.packFileName=pack+self.packVersion+"."+self.packJson["extension"]
         self.cd_install_dir()
-        self.download(self.url,self.packFileName)
+        if not self.checkCache(self.packFileName):
+            self.download(self.url,self.packFileName)
         self.unpack(self.packFileName)
+
+    def checkCache(self,packFileName):
+        if os.path.exists(path.join(self.cache_path,packFileName)):
+            print("已经缓存")
+            return True
+        else:
+            return False
+
 
     def download(self,url,packFileName):
         r=requests.get(url)
-        with open(packFileName,"wb") as package:
+        with open(path.join(self.cache_path,packFileName),"wb") as package:
             package.write(r.content)
 
     def loadJson(self,pack):
@@ -44,16 +63,22 @@ class lynn:
             return packJson
 
     def unpack(self,packFileName):
+        self.cd_cache_dir()
         if zipfile.is_zipfile(self.packFileName):
             with zipfile.ZipFile(self.packFileName) as zipPack:
-                zipPack.extractall(self.packName)
+                zipPack.extractall(path.join(self.install_path,self.packName))
         elif tarfile.is_tarfile(self.packFileName):
             with tarfile.TarFile(self.packFileName) as tarPack:
-                tarPack.extractall(self.packName)
-
+                tarPack.extractall(path.join(self.install_path,self.packName))
+        self.cd_install_dir()
+        #shutil.move(src dir)
+    def cd_cache_dir(self):
+        os.chdir(self.cache_path)
     def cd_install_dir(self):
+        if not os.path.exists(self.install_path):
+            os.mkdir(self.install_path)
         os.chdir(self.install_path)
-
+        
     def help(self):
         print('''
 Usage:
