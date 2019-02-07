@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/corona10/fuego"
+
+	"github.com/sherylynn/fuego"
 )
 
 type Lynn struct {

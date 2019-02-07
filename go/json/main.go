@@ -1,9 +1,10 @@
 package main
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
-	"github.com/corona10/fuego"
+
+	"github.com/sherylynn/fuego"
 )
 
 func install() {
