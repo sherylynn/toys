@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime"
 )
 
 func main() {
@@ -13,5 +14,18 @@ func main() {
 	}
 	fmt.Println(s)
 	fmt.Println(os.Args[0])
-	fmt.Println(os.Args[1])
+	if len(os.Args) > 2 {
+		fmt.Println(os.Args[1])
+	}
+	switch system := runtime.GOOS; system {
+	case "linux":
+		fmt.Println("linux")
+	case "darwin":
+		fmt.Println("osx")
+	case "windows":
+		fmt.Println("windows")
+	default:
+		fmt.Printf("system is %s\n", system)
+	}
+	fmt.Println(runtime.GOARCH)
 }
