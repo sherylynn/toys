@@ -11,9 +11,12 @@ type Pack struct {
 	Url       string
 	Extension string
 	Arch      struct {
-		Arm   string
-		Amd64 string
-		I386  string
+		Arm    string
+		Armv7l string
+		Armv8l string
+		Amd64  string
+		I386   string
+		X86_64 string
 	}
 	Os struct {
 		Linux   string
