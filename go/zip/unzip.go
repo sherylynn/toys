@@ -9,6 +9,7 @@ import (
 )
 
 func Unzip(src, target string) {
+	//src and target can't parser ~ or $HOME
 	zipReader, _ := zip.OpenReader(src)
 	for _, file := range zipReader.Reader.File {
 		zippedFile, err := file.Open()
