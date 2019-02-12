@@ -1,3 +1,5 @@
 windows 下即使处理器好 vim 的go插件也卡顿
 emacs 下的go插件没有vim下的提示好
 而code太大了
+重新更新了spacemacs的配置，能够有稍弱于vim的提示，但是ssh下的spacemacs 太丑了
+尝试了25 和mac emacs26 都没有正常的配色
