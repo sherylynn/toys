@@ -8,8 +8,12 @@ import (
 	"path/filepath"
 )
 
-func Unzip(src, target string) {
+func Unzip(src string, targets ...string) {
 	//src and target can't parser ~ or $HOME
+	target := "./"
+	if len(targets) > 0 {
+		target = targets[0]
+	}
 	zipReader, _ := zip.OpenReader(src)
 	for _, file := range zipReader.Reader.File {
 		zippedFile, err := file.Open()

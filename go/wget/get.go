@@ -13,7 +13,7 @@ func GetFileName(URL string) string {
 	fileName := strings.Split(URL, "/")
 	return fileName[len(fileName)-1]
 }
-func Get(URL string) {
+func Get(URL string) string {
 	fileName := GetFileName(URL)
 	out, err := os.Create(fileName)
 	if err != nil {
@@ -30,4 +30,5 @@ func Get(URL string) {
 		log.Fatal(err)
 	}
 	fmt.Println("finished,size:", size)
+	return fileName
 }

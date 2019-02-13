@@ -12,8 +12,7 @@ func TestGetFileName(t *testing.T) {
 }
 func TestGet(t *testing.T) {
 	URL := "https://github.com/sherylynn/pdf-sync/raw/master/icon.png"
-	fileName := GetFileName(URL)
-	Get(URL)
+	fileName := Get(URL)
 	_, err := os.Stat(fileName)
 	if err != nil && os.IsNotExist(err) {
 		t.Error(err)

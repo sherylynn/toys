@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/sherylynn/fuego"
+	"github.com/sherylynn/toys/go/wget"
 	"github.com/sherylynn/toys/go/zip"
 )
 
@@ -11,7 +12,9 @@ type Lynn struct {
 }
 
 func (l Lynn) UnzipTest() {
-	zip.Unzip("~/toys/go/zip/test.zip", "~/toys/go/zip")
+	URL := "github.com/sherylynn/toys/go/zip/test.zip"
+	fileName := wget.Get(URL)
+	zip.Unzip(fileName)
 }
 
 func (l Lynn) Echo(a string) {
