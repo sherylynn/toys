@@ -16,7 +16,7 @@ func TestUnzipWithOutArgs(t *testing.T) {
 }
 func TestUnzipWithArgs(t *testing.T) {
 	Unzip("test.zip", "./")
-	_, err := os.Stat("zipDir")
+	_, err := os.Stat("zipDir/zipFile.txt")
 	if err != nil && os.IsNotExist(err) {
 		t.Error(err)
 	} else {
