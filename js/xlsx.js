@@ -12,7 +12,7 @@ let fuck =async ()=>{
   dirList.forEach(async (file)=>{
     let file_no_ext=file.split('.')[0]
     let file_ext=file.split('.').pop()
-    if(file_ext=='docx'){
+    if(file_ext=='docx'||file_ext=='doc'||file_ext=='wps'){
       let 科室=file_no_ext.split('【')[1].split('】')[0]
       let 作者=file_no_ext.split('【')[1].split('】')[1].split('.')[0].split('-')[0]
       let 标题=file_no_ext.split('【')[1].split('】')[1].split('.')[0].split('-')[1]

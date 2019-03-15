@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+  "io/ioutil"
 )
 
 type Pack struct {
@@ -28,15 +29,11 @@ type Pack struct {
 }
 
 func main() {
-	packJson := `{
-  "name":"v2ray",
-  "version":"4.11.0",
-  "url":"https://github.com/v2ray/v2ray-core/releases/download/v$version/v2ray-$os-$arch.zip",
-  "extension":"zip",
-  "arch":{"armv7l":"arm","armv8l":"arm","AMD64":"64","x86_64":"64"},
-  "os":{"Linux":"linux","Windows":"windows","Darwin":"macos"},
-  "comment":"https://github.com/v2ray/v2ray-core/releases/download/v4.11.0/v2ray-linux-arm.zip"
-	}`
+  packJsonFile,err:= ioutil.ReadFile("../../json/v2ray.json")
+  if err!=nil{
+    fmt.Println(err)
+  }
+  packJson:=string(packJsonFile)
 	var pack Pack
 	json.Unmarshal([]byte(packJson), &pack)
 	fmt.Println(pack)
