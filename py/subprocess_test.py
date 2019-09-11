@@ -14,5 +14,6 @@ while 1:
     line2=q.stderr.readline().decode('utf-8')
     if "http" in line2:
         print(line2)
-        print(line2.split("http")[1])
+        url=line2.split(" ")[-1]
+        subprocess.call(['termux-open-url',url])
         break
