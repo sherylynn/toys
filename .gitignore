@@ -6,3 +6,4 @@ package-lock.json
 .vscode/*
 *.pyc
 *.exe
+*main.exe
