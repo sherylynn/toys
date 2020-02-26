@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <sys/malloc.h>
+#include <ncurses.h>
+
+int main(){
+  int *a = (int *)malloc(sizeof(int)*4);
+  free(a);
+  _getch();
+}
