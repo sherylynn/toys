@@ -8,3 +8,4 @@ package-lock.json
 *.pyc
 *.exe
 *main.exe
+*.ccls-cache*
