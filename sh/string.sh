@@ -1,6 +1,9 @@
 #!/bin/bash
 python_version=3.6.8
 python_prefix=${python_version//./}
+#切片掉第一个数字3
+python_no_first_word=${python_version#"3"}
+echo $python_no_first_word
 python_final=${python_prefix:0:2}
 echo $python_final
 python_go=${python_version//./:0:2}
