@@ -42,7 +42,7 @@ fi
 
 #搜索特殊符号 比如字符点 .
 bin_with_period=golang.tar.gz
-bin_without_period=golang
+bin_without_period=ftpserver-linux-arm64
 if [[ $bin_with_period == *.* ]];then
   echo "包含了字符点."
 fi
