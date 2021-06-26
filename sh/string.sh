@@ -39,3 +39,14 @@ fi
 if [[ $(pip --version) == *from* ]]; then
   echo 2
 fi
+
+#搜索特殊符号 比如字符点 .
+bin_with_period=golang.tar.gz
+bin_without_period=golang
+if [[ $bin_with_period == *.* ]];then
+  echo "包含了字符点."
+fi
+if [[ $bin_without_period != *.* ]];then
+  echo "不包含字符点"
+fi
+
