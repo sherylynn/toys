@@ -2,8 +2,10 @@ time_count=0
 time_space=90
 block_title="微信firefox"
 allow_title="通关宝典考试软件选择命令提示符"
+allow_pdf_title="福昕"
+test_title="Sublime"
 alert_message="还在玩,快学习,快起床,快想想你要开玛莎拉蒂,"
-#pip3 install pynput
+#pip3 install pynput==1.6.8
 
 from pynput import mouse
 from datetime import datetime
@@ -18,6 +20,16 @@ from datetime import date,timedelta
 import pyttsx3 
 # 模块初始化
 
+import os
+
+def sound_max():
+    WM_APPCOMMAND = 0x319
+    APPCOMMAND_VOLUME_MAX = 0x0a
+    APPCOMMAND_VOLUME_MIN = 0x09
+    win32api.SendMessage(-1, WM_APPCOMMAND, 0x30292, APPCOMMAND_VOLUME_MAX * 0x10000)
+
+def killexe(exe):
+    os.system('taskkill/F /IM '+exe)
 
 def remain_daytime():
     d1=date(2021, 8, 27)
@@ -26,6 +38,7 @@ def remain_daytime():
 
 
 def alert():
+    sound_max()
     #win32api.MessageBox(None,"快去看书","要命啦!!!!!!!!!!!!!!!!!!!!!",win32con.MB_OK)
     engine = pyttsx3.init() 
     # 设置要播报的Unicode字符串
@@ -39,6 +52,8 @@ def countTime(inc):
     global time_count
     global time_space
     time_count+=1
+    killexe("按键精灵2014.exe")
+
     print(time_count)
     if time_count >= time_space:
         alert()
@@ -55,7 +70,8 @@ def clear_time_count():
     #如果不是被禁止的窗口,点击鼠标会清空
     #if title not in block_title:
     #    time_count=0
-    if title !="" and title in allow_title:
+    print(title)
+    if title !="" and (title in allow_title or allow_pdf_title in title or test_title in title):
         time_count=0
 
 def on_move(x, y):
