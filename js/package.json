@@ -5,7 +5,8 @@
   "main": "fs.js",
   "dependencies": {
     "ejsexcel": "^3.5.2",
-    "xlsx": "^0.14.1"
+    "xlsx": "^0.14.1",
+    "xpath-to-css": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
