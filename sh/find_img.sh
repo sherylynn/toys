@@ -1,7 +1,7 @@
 NAME_FILE=img_names.txt
 ERROR_LIST=not_found.txt
 #IMG_DIR=img_dir
-IMG_DIR=./
+IMG_DIR=./image
 OUT_DIR=./out
 SWAP_FILE=./swap.txt
 #init ERROR_LIST
