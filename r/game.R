@@ -11,6 +11,10 @@ if (!requireNamespace("shiny", quietly = TRUE)) {
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
+# 没改镜像的记得先改镜像
+install.packages("devtools")
+
+
 
 # 加载shiny包
 library(shiny)
