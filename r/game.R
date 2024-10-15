@@ -1,9 +1,16 @@
-#清华源头
+#清华源 bioconductor
 options(BioC_mirror="https://mirrors.tuna.tsinghua.edu.cn/bioconductor")
 # 安装shiny包
 if (!requireNamespace("shiny", quietly = TRUE)) {
   install.packages("shiny")
 }
+# 安装BiocManager包
+# R4.3.x对应的bioconductor版本是3.18，R4.4.x对应的版本就是3.19了，注意不要搞错，
+# 否则会报错哦
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
 
 # 加载shiny包
 library(shiny)
