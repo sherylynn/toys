@@ -12,8 +12,12 @@ if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
 # 没改镜像的记得先改镜像
-install.packages("devtools")
+if (!require("devtools", quietly = TRUE))
+  install.packages("devtools")
 
+# styler 格式化代码
+if (!require("styler", quietly = TRUE))
+  install.packages("styler")
 
 
 # 加载shiny包
@@ -73,4 +77,4 @@ server <- function(input, output, session) {
 }
 
 # 运行Shiny应用
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server, options = list(host = "0.0.0.0", port = 1234) )
