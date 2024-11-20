@@ -15,6 +15,8 @@ if (!require("BiocManager", quietly = TRUE)) {
 # 没改镜像的记得先改镜像
 # if (!require("devtools", quietly = TRUE))
 # install.packages("devtools")
+# library(devtools)
+# install_github("ayueme/easyTCGA")
 
 # styler 格式化代码
 if (!require("styler", quietly = TRUE)) {
