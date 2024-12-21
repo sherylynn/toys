@@ -4,10 +4,15 @@ options(BioC_mirror = "https://mirrors.tuna.tsinghua.edu.cn/bioconductor")
 if (!require("styler", quietly = TRUE)) {
   install.packages("styler")
 }
-a=1:6
-ls()
-mean(a)
-sample(x=1:4,size=2)
-sample(x=a,size=1)
-args(sample)
-sample(x=a,size=2,replace=TRUE)
+# 获取所有对象空间
+# ls()
+# 获取平均值
+# mean(a)
+roll <- function() {
+  a <- 1:6
+  dice <- sample(x = a, size = 2, replace = TRUE)
+  sum(dice)
+}
+# 获取函数参数
+# args(sample)
+roll()
