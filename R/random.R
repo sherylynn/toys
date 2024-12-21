@@ -8,11 +8,14 @@ if (!require("styler", quietly = TRUE)) {
 # ls()
 # 获取平均值
 # mean(a)
-roll <- function() {
-  a <- 1:6
-  dice <- sample(x = a, size = 2, replace = TRUE)
+roll <- function(bones) {
+  # a <- 1:6
+  # dice <- sample(x = a, size = 2, replace = TRUE)
+  dice <- sample(x = bones, size = 2, replace = TRUE)
   sum(dice)
 }
 # 获取函数参数
 # args(sample)
-roll()
+# roll()
+roll(1:6)
+# roll(bones = 1:20)
