@@ -8,7 +8,7 @@ if (!require("styler", quietly = TRUE)) {
 # ls()
 # 获取平均值
 # mean(a)
-roll <- function(bones) {
+roll <- function(bones = 1:6) {
   # a <- 1:6
   # dice <- sample(x = a, size = 2, replace = TRUE)
   dice <- sample(x = bones, size = 2, replace = TRUE)
