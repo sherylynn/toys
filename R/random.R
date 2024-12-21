@@ -29,4 +29,5 @@ roll(1:6)
 library("ggplot2")
 x <- c(1, 2, 3, 4, 5)
 y <- x * 2
-qplot(x, y)
+p=qplot(x, y)
+ggsave('/sdcard/Download/qplot.pdf',plot=p,width = 5,height = 7)
