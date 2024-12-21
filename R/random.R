@@ -29,5 +29,9 @@ roll(1:6)
 library("ggplot2")
 x <- c(1, 2, 3, 4, 5)
 y <- x * 2
-p=qplot(x, y)
-ggsave('/sdcard/Download/qplot.pdf',plot=p,width = 5,height = 7)
+p <- qplot(x, y)
+ggsave("/sdcard/Download/qplot.pdf", plot = p, width = 10, height = 10)
+
+x2 <- c(1, 2, 2, 2, 3, 4, 4, 4, 5)
+p2 <- qplot(x2, binwidth = 1)
+ggsave("/sdcard/Download/qplot2.pdf", plot = p2, width = 10, height = 10)
