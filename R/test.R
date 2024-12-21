@@ -4,6 +4,9 @@ options(BioC_mirror = "https://mirrors.tuna.tsinghua.edu.cn/bioconductor")
 if (!requireNamespace("shiny", quietly = TRUE)) {
   install.packages("shiny")
 }
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
 #!requireNamespace("shiny", quietly = TRUE)
 #!require("shiny", quietly = TRUE)
 #!require("shiny")
