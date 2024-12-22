@@ -47,3 +47,4 @@ ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
 my_install("txtplot")
 library("txtplot")
 ?txtplot
+!require("txtplot")
