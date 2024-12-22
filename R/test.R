@@ -16,3 +16,7 @@ if (!requireNamespace("ggplot2", quietly = TRUE)) {
 #library('shiny')
 require('styler')
 ?sample
+test=c(1,2,3)
+#names(test)=c('q')
+# 相关性包
+#corrplot
