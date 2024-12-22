@@ -6,7 +6,9 @@ my_install <- function(my_package) {
   }
 }
 
+my_install("openxlsx")
 
+my_install("Hmisc")
 # styler 格式化代码
 #my_install("styler")
 # 可视化
