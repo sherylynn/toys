@@ -20,3 +20,5 @@ test=c(1,2,3)
 #names(test)=c('q')
 # 相关性包
 #corrplot
+#printer(width=79) #这个是原始S语言中的功能，建议用txtplot作为txt界面下的替代选择
+

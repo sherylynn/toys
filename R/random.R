@@ -43,3 +43,7 @@ ggsave("/sdcard/Download/qplot2.pdf", plot = p2, width = 10, height = 10)
 rolls=replicate(10000,roll())
 p3=qplot(rolls,binwidth=1)
 ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
+
+my_install("txtplot")
+library("txtplot")
+?txtplot
