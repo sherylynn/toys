@@ -18,7 +18,9 @@ my_install <- function(my_package) {
 roll <- function(bones = 1:6) {
   # a <- 1:6
   # dice <- sample(x = a, size = 2, replace = TRUE)
-  dice <- sample(x = bones, size = 2, replace = TRUE)
+  dice <- sample(x = bones, size = 2, replace = TRUE,
+                 prob = c(1/8,1/8,1/8,1/8,1/8,3/8)
+                 )
   sum(dice)
 }
 # 获取函数参数
@@ -36,6 +38,6 @@ x2 <- c(1, 2, 2, 2, 3, 4, 4, 4, 5)
 p2 <- qplot(x2, binwidth = 1)
 ggsave("/sdcard/Download/qplot2.pdf", plot = p2, width = 10, height = 10)
 
-rolls=replicate(10000,roll(1:20))
+rolls=replicate(10000,roll())
 p3=qplot(rolls,binwidth=1)
 ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)

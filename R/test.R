@@ -15,3 +15,4 @@ if (!requireNamespace("ggplot2", quietly = TRUE)) {
 #library('ggplot2')
 #library('shiny')
 require('styler')
+?sample
