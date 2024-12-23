@@ -5,17 +5,22 @@ my_install <- function(my_package) {
     install.packages(my_package)
   }
 }
-#操作 xlsx
-my_install("openxlsx")
+install_all_old <- function() {
+  # 操作 xlsx
+  my_install("openxlsx")
+  my_install("Hmisc")
+  # styler 格式化代码
+  my_install("styler")
+  # 图形可视化
+  my_install("ggplot2")
 
-my_install("Hmisc")
-# styler 格式化代码
-my_install("styler")
-# 图形可视化
-my_install("ggplot2")
+  # 终端可视化
+  my_install("txtplot")
 
-# 终端可视化
-my_install("txtplot")
+  # 网页 UI
+  my_install("shiny")
+}
 
-# 网页 UI
-my_install("shiny")
+install_all_new <- function() {
+
+}

@@ -2,8 +2,10 @@
 #file.exists(file.path(.libPaths(), "ggplot2"))
 #library('ggplot2')
 #library('shiny')
+source("my_package.R")
+install_all()
 require('styler')
-?sample
+#?sample
 test=c(1,2,3)
 #names(test)=c('q')
 # 相关性包
