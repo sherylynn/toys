@@ -32,3 +32,4 @@ ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
 library("txtplot")
 ?txtplot
 !require("txtplot")
+#system('pwd')

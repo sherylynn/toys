@@ -19,6 +19,8 @@ install_all_old <- function() {
 
   # 网页 UI
   my_install("shiny")
+  # rstudio 包
+  my_install("rstudioapi")
 }
 
 install_all_new <- function() {
