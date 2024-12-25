@@ -1,13 +1,15 @@
 # 清华源 bioconductor
 options(BioC_mirror = "https://mirrors.tuna.tsinghua.edu.cn/bioconductor")
 my_install <- function(my_package) {
-  print(my_package)
-  print(!require(package=my_package))
-  #if (!require(my_package)) {
+  local_package <- my_package
+  # print(my_package)
+  print(!require(package = my_package))
+  print(!require(package = local_package))
+  # if (!require(my_package)) {
   #  install.packages(my_package)
-  #}
+  # }
 }
-install_all<- function() {
+install_all <- function() {
   # 操作 xlsx
   my_install("openxlsx")
   my_install("Hmisc")
@@ -29,4 +31,4 @@ install_all<- function() {
 }
 
 install_all()
-#?require
+# ?require
