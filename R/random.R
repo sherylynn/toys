@@ -33,3 +33,6 @@ library("txtplot")
 ?txtplot
 !require("txtplot")
 #system('pwd')
+
+library("httpgd")
+hgd()
