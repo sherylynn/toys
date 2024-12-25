@@ -33,6 +33,7 @@ rolls=replicate(10000,roll())
 p3=qplot(rolls,binwidth=1)
 ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
 
+#不带变量存储就直接绘图
 qplot(rolls,binwidth=1)
 #library("txtplot")
 #?txtplot
