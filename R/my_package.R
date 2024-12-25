@@ -1,13 +1,19 @@
 # 清华源 bioconductor
 options(BioC_mirror = "https://mirrors.tuna.tsinghua.edu.cn/bioconductor")
 my_install <- function(my_package) {
-  local_package <- my_package
+  # local_package <- my_package
   # print(my_package)
-  print(!require(package = my_package))
-  print(!require(package = local_package))
-  # if (!require(my_package)) {
-  #  install.packages(my_package)
-  # }
+  # print(!require(package = my_package))
+  # print(!require(package = local_package))
+  # ?library
+  # print(library(my_package, character.only = TRUE))
+  # print(library(my_package, character.only = TRUE, quietly = TRUE))
+  # print(require(my_package, character.only = TRUE, quietly = TRUE))
+
+  if (!require(my_package, character.only = TRUE, quietly = TRUE)) {
+    # 如果没有character就会把变量名直接认成包啦
+    install.packages(my_package)
+  }
 }
 install_all <- function() {
   # 操作 xlsx
