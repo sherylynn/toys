@@ -22,6 +22,8 @@ die <- 1:6
 names(die) <- c("one", "two", "three", "four", "fivr", "six")
 roll(1:6)
 names(die)
+attributes(die)
+die
 # roll(bones = 1:20)
 library("ggplot2")
 x <- c(1, 2, 3, 4, 5)
