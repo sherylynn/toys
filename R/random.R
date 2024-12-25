@@ -2,6 +2,10 @@
 # ls()
 # 获取平均值
 # mean(a)
+setwd('~/toys/R')
+library("httpgd")
+dev.off()
+hgd()
 roll <- function(bones = 1:6) {
   # a <- 1:6
   # dice <- sample(x = a, size = 2, replace = TRUE)
@@ -29,10 +33,9 @@ rolls=replicate(10000,roll())
 p3=qplot(rolls,binwidth=1)
 ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
 
-library("txtplot")
-?txtplot
-!require("txtplot")
+qplot(rolls,binwidth=1)
+#library("txtplot")
+#?txtplot
+#!require("txtplot")
 #system('pwd')
 
-library("httpgd")
-hgd()
