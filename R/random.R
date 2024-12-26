@@ -6,7 +6,7 @@ setwd("~/toys/R")
 library("httpgd")
 # dev.off()
 hgd(
-  # host = getOption("httpgd.host", "0.0.0.0"),
+  host = getOption("httpgd.host", "0.0.0.0"),
   port = getOption("httpgd.port", 10001),
   token = getOption("httpgd.token", FALSE),
 )
@@ -51,3 +51,6 @@ qplot(rolls, binwidth = 1)
 # ?txtplot
 # !require("txtplot")
 # system('pwd')
+
+m <- matrix(die, nrow = 2)
+n <- matrix(die, nrow = 2, byrow = TRUE)
