@@ -9,3 +9,4 @@ package-lock.json
 *.exe
 *main.exe
 *.ccls-cache*
+.Rhistory
