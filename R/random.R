@@ -4,7 +4,7 @@
 # mean(a)
 setwd("~/toys/R")
 library("httpgd")
-dev.off()
+#dev.off()
 hgd()
 roll <- function(bones = 1:6) {
   # a <- 1:6
