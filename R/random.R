@@ -4,8 +4,12 @@
 # mean(a)
 setwd("~/toys/R")
 library("httpgd")
-#dev.off()
-hgd()
+# dev.off()
+hgd(
+  host = getOption("httpgd.host", "0.0.0.0"),
+  port = getOption("httpgd.port", 10001),
+  token = getOption("httpgd.token", FALSE),
+)
 roll <- function(bones = 1:6) {
   # a <- 1:6
   # dice <- sample(x = a, size = 2, replace = TRUE)
@@ -25,7 +29,7 @@ names(die)
 attributes(die)
 dim(die) <- c(3, 2)
 die
-?dim
+# ?dim
 # roll(bones = 1:20)
 library("ggplot2")
 x <- c(1, 2, 3, 4, 5)
