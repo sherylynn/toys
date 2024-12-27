@@ -12,7 +12,7 @@ my_install <- function(my_package) {
 
   if (!require(my_package, character.only = TRUE, quietly = TRUE)) {
     # 如果没有character就会把变量名直接认成包啦
-    install.packages(my_package)
+    install.packages(my_package,repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN/")
   }
 }
 install_all <- function() {
