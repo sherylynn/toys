@@ -38,3 +38,5 @@ install_all <- function() {
 
 install_all()
 # ?require
+
+.libPaths()
