@@ -3,14 +3,18 @@
 # 获取平均值
 # mean(a)
 setwd("~/toys/R")
-library("httpgd")
-# dev.off()
 # mac 的图形 emacs 下可以直接跳出窗口绘制图形
+
+# 示例：检测端口是否被占用
+port <- 10001
+# dev.off()
+library("httpgd")
 hgd(
   host = getOption("httpgd.host", "0.0.0.0"),
-  port = getOption("httpgd.port", 10001),
+  port = getOption("httpgd.port", port),
   token = getOption("httpgd.token", FALSE),
 )
+
 roll <- function(bones = 1:6) {
   # a <- 1:6
   # dice <- sample(x = a, size = 2, replace = TRUE)
