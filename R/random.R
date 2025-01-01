@@ -5,6 +5,7 @@
 setwd("~/toys/R")
 library("httpgd")
 # dev.off()
+# mac 的图形 emacs 下可以直接跳出窗口绘制图形
 hgd(
   host = getOption("httpgd.host", "0.0.0.0"),
   port = getOption("httpgd.port", 10001),
@@ -32,19 +33,21 @@ die
 # ?dim
 # roll(bones = 1:20)
 library("ggplot2")
-x <- c(1, 2, 3, 4, 5)
-y <- x * 2
-p <- qplot(x, y)
-ggsave("/sdcard/Download/qplot.pdf", plot = p, width = 10, height = 10)
-
-x2 <- c(1, 2, 2, 2, 3, 4, 4, 4, 5)
-p2 <- qplot(x2, binwidth = 1)
-ggsave("/sdcard/Download/qplot2.pdf", plot = p2, width = 10, height = 10)
-
 rolls <- replicate(10000, roll())
-p3 <- qplot(rolls, binwidth = 1)
-ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
+sdcard_path <- "/sdcard/Download/"
+if (file.exists(sdcard_path)) {
+  x <- c(1, 2, 3, 4, 5)
+  y <- x * 2
+  p <- qplot(x, y)
+  ggsave("/sdcard/Download/qplot.pdf", plot = p, width = 10, height = 10)
 
+  x2 <- c(1, 2, 2, 2, 3, 4, 4, 4, 5)
+  p2 <- qplot(x2, binwidth = 1)
+  ggsave("/sdcard/Download/qplot2.pdf", plot = p2, width = 10, height = 10)
+
+  p3 <- qplot(rolls, binwidth = 1)
+  ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
+}
 # 不带变量存储就直接绘图
 qplot(rolls, binwidth = 1)
 # library("txtplot")
