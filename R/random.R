@@ -64,3 +64,5 @@ n <- matrix(die, nrow = 2, byrow = TRUE)
 
 mil <- 10000000
 class(mil) <- c("POSIXct", "POSIXt")
+mil
+sum(c(TRUE, TRUE, FALSE, TRUE))
