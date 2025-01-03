@@ -1,4 +1,3 @@
-# 获取所有对象空间
 # ls()
 # 获取平均值
 # mean(a)
@@ -66,3 +65,9 @@ mil <- 10000000
 class(mil) <- c("POSIXct", "POSIXt")
 mil
 sum(c(TRUE, TRUE, FALSE, TRUE))
+
+
+as.character(1)
+a <- data.frame(name = c("张三", "李四", "王五"), gender = c("male", "female", "male"))
+a
+b <- list(new = )
