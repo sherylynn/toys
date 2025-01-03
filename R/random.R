@@ -61,3 +61,6 @@ qplot(rolls, binwidth = 1)
 
 m <- matrix(die, nrow = 2)
 n <- matrix(die, nrow = 2, byrow = TRUE)
+
+mil <- 10000000
+class(mil) <- c("POSIXct", "POSIXt")
