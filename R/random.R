@@ -80,3 +80,6 @@ a
 b <- list(姓名 = "张三", 性别 = "男", value = 1)
 b
 c <- c(姓名 = "张三", 性别 = "男", value = "one")
+
+d <- read.csv("./deck.csv")
+d
