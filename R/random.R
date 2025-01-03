@@ -41,18 +41,25 @@ sdcard_path <- "/sdcard/Download/"
 if (file.exists(sdcard_path)) {
   x <- c(1, 2, 3, 4, 5)
   y <- x * 2
-  p <- qplot(x, y)
+  data1 <- data.frame(x = x, y = y)
+  # p <- qplot(x, y)
+  p <- ggplot(data1)
   ggsave("/sdcard/Download/qplot.pdf", plot = p, width = 10, height = 10)
 
   x2 <- c(1, 2, 2, 2, 3, 4, 4, 4, 5)
-  p2 <- qplot(x2, binwidth = 1)
+  data2 <- data.frame(x = x2)
+  # p2 <- qplot(x2, binwidth = 1)
+  p2 <- ggplot(data2)
   ggsave("/sdcard/Download/qplot2.pdf", plot = p2, width = 10, height = 10)
 
-  p3 <- qplot(rolls, binwidth = 1)
+  # p3 <- qplot(rolls, binwidth = 1)
+  data3 <- data.frame(x = rolls)
+  p3 <- ggplot(data3)
   ggsave("/sdcard/Download/qplot3.pdf", plot = p3, width = 10, height = 10)
 }
 # 不带变量存储就直接绘图
-qplot(rolls, binwidth = 1)
+data4 <- data.frame(x = rolls)
+ggplot(data4, binwidth = 1)
 # library("txtplot")
 # ?txtplot
 # !require("txtplot")
@@ -70,4 +77,6 @@ sum(c(TRUE, TRUE, FALSE, TRUE))
 as.character(1)
 a <- data.frame(name = c("张三", "李四", "王五"), gender = c("male", "female", "male"))
 a
-# b <- list(new = )
+b <- list(姓名 = "张三", 性别 = "男", value = 1)
+b
+c <- c(姓名 = "张三", 性别 = "男", value = "one")
