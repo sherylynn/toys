@@ -70,4 +70,4 @@ sum(c(TRUE, TRUE, FALSE, TRUE))
 as.character(1)
 a <- data.frame(name = c("张三", "李四", "王五"), gender = c("male", "female", "male"))
 a
-b <- list(new = )
+# b <- list(new = )
