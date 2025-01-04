@@ -81,5 +81,14 @@ b <- list(姓名 = "张三", 性别 = "男", value = 1)
 b
 c <- c(姓名 = "张三", 性别 = "男", value = "one")
 
-d <- read.csv("./deck.csv")
-d
+deck <-
+  read.csv("./deck.csv")
+head(deck)
+
+write.csv(deck, file = "./deck_save.csv", row.names = FALSE)
+
+deck[1, 1:3]
+# 如果是提取一列
+deck[1:3, 1, drop = FALSE]
+
+# R的索引真奇怪，负数是排除而不是倒序，空格则是取所有的集
