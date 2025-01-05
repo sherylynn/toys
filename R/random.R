@@ -93,3 +93,6 @@ deck[1:3, 1, drop = FALSE]
 
 # R的索引真奇怪，负数是排除而不是倒序，空格则是取所有的集
 # TRUE FLASE 索引可以选择是否索引进去
+deck[1, c("face", "suit", "value")]
+
+deck[, "value"]
