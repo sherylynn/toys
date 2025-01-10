@@ -102,4 +102,10 @@ shuffle <- function(cards) {
   cards[random, ]
 }
 
+
 shuffle(deck)
+vec <- c(0, 0, 0, 0, 0, 0)
+vec[1] <- 1000
+vec[c(1, 3, 5)] <- c(1, 1, 1)
+vec[4:6] <- vec[4:6] + 1
+vec[7] <- 0
