@@ -34,6 +34,8 @@ install_all <- function() {
   # httpgd 包
   # 负责把plot输出到http
   my_install("httpgd")
+  # code 语言包
+  my_install("languageserver")
 }
 
 install_all()
