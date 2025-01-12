@@ -109,3 +109,10 @@ vec[1] <- 1000
 vec[c(1, 3, 5)] <- c(1, 1, 1)
 vec[4:6] <- vec[4:6] + 1
 vec[7] <- 0
+age <- c(1, 3, 5, 7, 11)
+weight <- c(4.1, 4.5, 5.1, 5.8, 6.9)
+mean(weight)
+sd(weight)
+cor(age, weight)
+# 最简单的画图
+plot(age, weight)
