@@ -131,3 +131,7 @@ c(1, 2, 3) == c(3, 2, 1)
 # cell 中的元素单个比较
 c(1, 2) %in% c(3, 4, 5)
 c(1, 2, 3, 4) %in% c(3, 4, 5)
+
+deck$face == "ace"
+
+sum(deck$face == "ace")
