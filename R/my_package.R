@@ -38,6 +38,8 @@ install_all <- function() {
   my_install("languageserver")
   # dplyr
   my_install("dplyr")
+  my_install("readxl")
+  my_install("writexl")
 }
 
 install_all()
