@@ -36,6 +36,8 @@ install_all <- function() {
   my_install("httpgd")
   # code 语言包
   my_install("languageserver")
+  # dplyr
+  my_install("dplyr")
 }
 
 install_all()
