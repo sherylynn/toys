@@ -66,10 +66,10 @@ scanned_ips=$(echo "$nmap_output" | grep "Scanning" | awk '{print $2}')
 echo "\n已扫描的IP地址:"
 echo "$scanned_ips"
 
-# 提取开放5555端口的设备
-devices=$(echo "$nmap_output" | grep "5555/tcp" -B 4 | grep "Nmap scan" | awk '{print $5}')
+# 提取开放5555端口的设备的IP地址到数组
+devices=($(echo "$nmap_output" | grep "5555/tcp" -B 4 | grep "Nmap scan" | awk '{print $NF}' | sed 's/[()]//g'))
 
-if [ -z "$devices" ]; then
+if [ ${#devices[@]} -eq 0 ]; then
     echo "\n扫描完成，未找到开启5555端口的设备"
     echo "请检查以下几点："
     echo "1. 确保设备已开启ADB无线调试"
@@ -80,25 +80,37 @@ if [ -z "$devices" ]; then
 fi
 
 echo "\n找到以下开启5555端口的设备："
-echo "$devices"
+printf "%s\n" "${devices[@]}"
 
 # 尝试连接每个设备
-for device in $devices; do
+for device in "${devices[@]}"; do
     echo "\n尝试连接设备: $device"
-    adb connect $device:5555
+    adb connect "$device:5555"
     sleep 2
     
     # 检查连接状态
     if adb devices | grep -q "$device:5555.*device"; then
         echo "成功连接到设备: $device"
-        # 将成功连接的IP添加到历史记录文件（如果不存在）
-        if ! grep -q "^$device$" "$ip_history_file" 2>/dev/null; then
-            echo "$device" >> "$ip_history_file"
-            echo "已将IP添加到历史记录"
+        
+        # 获取设备名称
+        device_name=$(adb -s "$device:5555" shell getprop ro.product.model 2>/dev/null)
+        echo "设备型号: $device_name"
+        
+        # 检查设备名称是否包含110
+        if [[ "$device_name" == *"110"* ]]; then
+            echo "找到目标设备！"
+            # 将成功连接的IP添加到历史记录文件（如果不存在）
+            if ! grep -q "^$device$" "$ip_history_file" 2>/dev/null; then
+                echo "$device" >> "$ip_history_file"
+                echo "已将IP添加到历史记录"
+            fi
+            sc "$device" &
+            sca "$device" &
+            scb "$device"
+        else
+            echo "不是目标设备，断开连接"
+            adb disconnect "$device:5555"
         fi
-        sc $device &
-        sca $device &
-        scb $device 
     else
         echo "无法连接到设备: $device"
     fi
