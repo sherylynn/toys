@@ -109,7 +109,6 @@ import { ref, computed, onMounted } from 'vue'
 import { ElCollapse, ElCollapseItem, ElCheckbox, ElLoading, ElDialog, ElButton, ElRadioGroup, ElRadio } from 'element-plus'
 import { View, Download, Loading } from '@element-plus/icons-vue'
 import ExcelViewer from './ExcelViewer.vue'
-import 'element-plus/dist/index.css'
 import axios from '../utils/axios'
 
 export default {
