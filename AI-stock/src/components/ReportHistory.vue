@@ -52,13 +52,24 @@ const fetchReports = async () => {
 
   try {
     const response = await axios.get('reports')
-    const reports = response.data.reports
+    const reports = response.data?.reports || []
 
     // 按公司和年份组织数据
     const companyMap = new Map()
 
+    if (reports.length === 0) {
+      companies.value = []
+      return
+    }
+
     reports.forEach(report => {
-      const [company, year] = report.file_path.split('/').slice(-3, -1)
+      if (!report?.file_path) return
+      
+      const pathParts = report.file_path.split('/')
+      if (pathParts.length < 3) return
+
+      const company = pathParts[pathParts.length - 3]
+      const year = pathParts[pathParts.length - 2]
       
       if (!companyMap.has(company)) {
         companyMap.set(company, new Map())
@@ -73,15 +84,20 @@ const fetchReports = async () => {
     })
 
     // 转换数据结构为组件所需格式
-    companies.value = Array.from(companyMap.entries()).map(([name, yearMap]) => ({
-      name,
-      years: Array.from(yearMap.entries())
-        .sort((a, b) => b[0] - a[0]) // 年份降序排序
-        .map(([value, reports]) => ({
-          value,
-          reports: reports.sort((a, b) => a.title.localeCompare(b.title)) // 报表名称升序排序
-        }))
-    }))
+    companies.value = Array.from(companyMap.entries())
+      .filter(([name]) => name) // 过滤掉空的公司名
+      .map(([name, yearMap]) => ({
+        name,
+        years: Array.from(yearMap.entries())
+          .filter(([value]) => value) // 过滤掉空的年份
+          .sort((a, b) => b[0] - a[0]) // 年份降序排序
+          .map(([value, reports]) => ({
+            value,
+            reports: reports
+              .filter(report => report?.title) // 过滤掉没有标题的报表
+              .sort((a, b) => a.title.localeCompare(b.title)) // 报表名称升序排序
+          }))
+      }))
   } catch (e) {
     error.value = '获取历史财报列表失败'
     console.error('获取历史财报列表失败:', e)

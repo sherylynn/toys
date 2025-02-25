@@ -327,11 +327,20 @@ func main() {
 
 	// API路由
 	r.GET("/api/reports", func(c *gin.Context) {
+		fmt.Println("开始获取历史财报列表...")
 		var allFiles []DownloadedFile
+	
+		// 检查downloads目录是否存在
+		if _, err := os.Stat("downloads"); os.IsNotExist(err) {
+			fmt.Println("警告：downloads目录不存在")
+			c.JSON(http.StatusOK, gin.H{"reports": allFiles})
+			return
+		}
 	
 		// 遍历downloads目录
 		err := filepath.Walk("downloads", func(path string, info os.FileInfo, err error) error {
 			if err != nil {
+				fmt.Printf("遍历目录出错 [%s]: %v\n", path, err)
 				return err
 			}
 	
@@ -340,22 +349,33 @@ func main() {
 				// 从路径中提取信息
 				relPath := strings.TrimPrefix(path, "downloads/")
 				parts := strings.Split(relPath, "/")
+				fmt.Printf("发现PDF文件：%s\n", path)
+				
 				if len(parts) >= 2 {
+					company := parts[0]
+					year := parts[1]
+					fileName := parts[len(parts)-1]
+					fmt.Printf("处理文件 - 公司：%s, 年份：%s, 文件名：%s\n", company, year, fileName)
+					
 					allFiles = append(allFiles, DownloadedFile{
-						Title:    strings.TrimSuffix(parts[len(parts)-1], ".pdf"),
-						FileName: parts[len(parts)-1],
+						Title:    strings.TrimSuffix(fileName, ".pdf"),
+						FileName: fileName,
 						FilePath: path,
 					})
+				} else {
+					fmt.Printf("警告：文件路径格式不正确：%s\n", path)
 				}
 			}
 			return nil
 		})
 	
 		if err != nil {
+			fmt.Printf("获取报表列表失败：%v\n", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "获取报表列表失败：" + err.Error()})
 			return
 		}
 	
+		fmt.Printf("成功获取到 %d 个历史财报\n", len(allFiles))
 		c.JSON(http.StatusOK, gin.H{
 			"reports": allFiles,
 		})
