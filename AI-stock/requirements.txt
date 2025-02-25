@@ -1,6 +1,6 @@
 # Web服务器相关依赖
 flask==3.0.0
-flask-cors==4.0.0
+flask-cors==4.0.2
 
 # 网络请求相关依赖
 requests==2.31.0
