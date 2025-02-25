@@ -21,7 +21,9 @@ if [ -f "$ip_history_file" ]; then
         
         if adb devices | grep -q "$ip:5555.*device"; then
             echo "成功连接到设备: $ip"
-            scrcpy -s $ip:5555 &
+            sc $ip &
+        sca $ip &
+        scb $ip
             connected=true
             break
         else
@@ -94,7 +96,9 @@ for device in $devices; do
             echo "$device" >> "$ip_history_file"
             echo "已将IP添加到历史记录"
         fi
-        sc $device:5555 
+        sc $device &
+        sca $device &
+        scb $device 
     else
         echo "无法连接到设备: $device"
     fi
