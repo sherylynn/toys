@@ -39,3 +39,5 @@ yarn-error.log*
 # Local development
 .local
 .cache/
+
+output/
