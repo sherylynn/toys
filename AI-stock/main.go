@@ -1,9 +1,11 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -11,9 +13,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
+
+//go:embed dist/*
+var distFS embed.FS
 
 type StockReportDownloader struct {
 	BaseURL     string
@@ -308,8 +312,6 @@ func main() {
 	// 设置gin路由
 	r := gin.Default()
 
-	// 提供静态文件服务
-	r.Use(static.Serve("/", static.LocalFile("dist", false)))
 	// 提供下载文件的静态服务
 	r.Static("/downloads", "downloads")
 
@@ -343,6 +345,18 @@ func main() {
 			"message": "下载成功",
 			"files":   files,
 		})
+	})
+
+	// 提供嵌入的静态文件服务
+	distFileSys, err := fs.Sub(distFS, "dist")
+	if err != nil {
+		panic(err)
+	}
+
+	// 处理前端路由
+	r.NoRoute(func(c *gin.Context) {
+		fileServer := http.FileServer(http.FS(distFileSys))
+		fileServer.ServeHTTP(c.Writer, c.Request)
 	})
 
 	// 启动服务器
