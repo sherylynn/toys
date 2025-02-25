@@ -8,8 +8,10 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -312,6 +314,24 @@ func mapToFormData(params map[string]string) string {
 	return strings.Join(parts, "&")
 }
 
+// openBrowser 打开默认浏览器访问指定URL
+func openBrowser(url string) error {
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	default: // linux, bsd, etc.
+		cmd = "xdg-open"
+	}
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
+}
+
 func main() {
 	// 创建下载目录
 	os.MkdirAll("downloads", 0755)
@@ -428,6 +448,17 @@ func main() {
 	})
 
 	// 启动服务器
-	fmt.Println("服务器已启动，访问 http://localhost:8080")
+	serverURL := "http://localhost:8080"
+	fmt.Printf("服务器已启动，访问 %s\n", serverURL)
+
+	// 启动浏览器
+	go func() {
+		// 等待一秒确保服务器已启动
+		time.Sleep(time.Second)
+		if err := openBrowser(serverURL); err != nil {
+			fmt.Printf("打开浏览器失败：%v\n", err)
+		}
+	}()
+
 	r.Run(":8080")
 }
