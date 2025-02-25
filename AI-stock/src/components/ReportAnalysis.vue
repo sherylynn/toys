@@ -110,7 +110,7 @@ import { ElCollapse, ElCollapseItem, ElCheckbox, ElLoading, ElDialog, ElButton, 
 import { View, Download, Loading } from '@element-plus/icons-vue'
 import ExcelViewer from './ExcelViewer.vue'
 import 'element-plus/dist/index.css'
-import axios from 'axios'
+import axios from '../utils/axios'
 
 export default {
   name: 'ReportAnalysis',
@@ -150,7 +150,7 @@ export default {
       loading.value = true
       error.value = ''
       try {
-        const response = await axios.get('http://localhost:5000/api/reports')
+        const response = await axios.get('reports')
         if (response.data && response.data.reports) {
           reports.value = response.data.reports
           groupedReports.value = response.data.groupedReports || []
@@ -193,7 +193,7 @@ export default {
       error.value = ''
 
       try {
-        const response = await axios.post('http://localhost:5000/api/analyze', {
+        const response = await axios.post('analyze', {
           reports: selectedFiles,
           options: {
             ...analysisOptions.value,

@@ -40,7 +40,7 @@
 import { ref, onMounted } from 'vue'
 import { ElIcon } from 'element-plus'
 import { Loading } from '@element-plus/icons-vue'
-import axios from 'axios'
+import axios from '../utils/axios'
 
 const loading = ref(false)
 const error = ref('')
@@ -51,7 +51,7 @@ const fetchReports = async () => {
   error.value = ''
 
   try {
-    const response = await axios.get('http://localhost:5000/api/reports')
+    const response = await axios.get('reports')
     const reports = response.data.reports
 
     // 按公司和年份组织数据

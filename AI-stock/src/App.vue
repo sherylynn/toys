@@ -50,7 +50,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import axios from './utils/axios'
 import ReportHistory from './components/ReportHistory.vue'
 import ReportAnalysis from './components/ReportAnalysis.vue'
 
@@ -77,7 +77,7 @@ const downloadReports = async () => {
   downloadedFiles.value = []
 
   try {
-    const response = await axios.post('http://localhost:5000/api/download', {
+    const response = await axios.post('download', {
       company_name: form.value.companyName,
       year: form.value.year || null
     })
@@ -88,6 +88,7 @@ const downloadReports = async () => {
   } catch (error) {
     message.value = error.response?.data?.message || '下载失败，请稍后重试'
     messageType.value = 'error'
+    console.error('下载错误：', error)
   } finally {
     loading.value = false
   }

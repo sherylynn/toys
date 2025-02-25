@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,7 +33,7 @@ type CompanyInfo struct {
 
 type DownloadRequest struct {
 	CompanyName string `json:"company_name"`
-	Year        int    `json:"year,omitempty"`
+	Year        string `json:"year,omitempty"`
 }
 
 type DownloadedFile struct {
@@ -94,13 +95,19 @@ func (d *StockReportDownloader) searchCompany(companyName string) (*CompanyInfo,
 	return &companies[0], nil
 }
 
-func (d *StockReportDownloader) downloadReports(companyName string, year int) ([]DownloadedFile, error) {
+func (d *StockReportDownloader) downloadReports(companyName string, year string) ([]DownloadedFile, error) {
 	currentYear := time.Now().Year()
-	if year == 0 {
-		year = currentYear
-	} else if year > currentYear {
-		fmt.Printf("指定的年份%d尚未到来，将尝试下载%d年的报告...\n", year, currentYear)
-		year = currentYear
+	if year == "" {
+		year = strconv.Itoa(currentYear)
+	} else {
+		yearInt, err := strconv.Atoi(year)
+		if err != nil {
+			return nil, fmt.Errorf("年份格式不正确")
+		}
+		if yearInt > currentYear {
+			fmt.Printf("指定的年份%d尚未到来，将尝试下载%d年的报告...\n", yearInt, currentYear)
+			year = strconv.Itoa(currentYear)
+		}
 	}
 
 	companyInfo, err := d.searchCompany(companyName)
@@ -110,19 +117,21 @@ func (d *StockReportDownloader) downloadReports(companyName string, year int) ([
 
 	// 从指定年份开始，逐年尝试下载直到找到可用的报告
 	originalYear := year
-	for year >= currentYear-2 { // 最多往前查找2年
-		files, err := d.downloadReportsForYear(companyName, companyInfo, year)
+	yearInt, _ := strconv.Atoi(year)
+	originalYearInt := yearInt
+	for yearInt >= currentYear-2 { // 最多往前查找2年
+		files, err := d.downloadReportsForYear(companyName, companyInfo, strconv.Itoa(yearInt))
 		if err == nil && len(files) > 0 {
-			if year != originalYear {
-				fmt.Printf("已找到%d年的报告\n", year)
+			if yearInt != originalYearInt {
+				fmt.Printf("已找到%d年的报告\n", yearInt)
 			}
 			return files, nil
 		}
 
 		if strings.Contains(err.Error(), "未找到") && strings.Contains(err.Error(), "的任何报表") {
-			if year > 1 {
-				fmt.Printf("未找到%d年的报告，尝试下载%d年的报告...\n", year, year-1)
-				year--
+			if yearInt > 1 {
+				fmt.Printf("未找到%d年的报告，尝试下载%d年的报告...\n", yearInt, yearInt-1)
+				yearInt--
 				continue
 			}
 		}
@@ -132,7 +141,8 @@ func (d *StockReportDownloader) downloadReports(companyName string, year int) ([
 	return nil, fmt.Errorf("未能找到%d年及之前的报告", originalYear)
 }
 
-func (d *StockReportDownloader) downloadReportsForYear(companyName string, companyInfo *CompanyInfo, year int) ([]DownloadedFile, error) {
+func (d *StockReportDownloader) downloadReportsForYear(companyName string, companyInfo *CompanyInfo, yearStr string) ([]DownloadedFile, error) {
+	year, _ := strconv.Atoi(yearStr)
 	// 创建基础下载目录
 	baseDownloadDir := filepath.Join("downloads", companyName)
 
@@ -316,6 +326,41 @@ func main() {
 	r.Static("/downloads", "downloads")
 
 	// API路由
+	r.GET("/api/reports", func(c *gin.Context) {
+		var allFiles []DownloadedFile
+	
+		// 遍历downloads目录
+		err := filepath.Walk("downloads", func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+	
+			// 只处理PDF文件
+			if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".pdf") {
+				// 从路径中提取信息
+				relPath := strings.TrimPrefix(path, "downloads/")
+				parts := strings.Split(relPath, "/")
+				if len(parts) >= 2 {
+					allFiles = append(allFiles, DownloadedFile{
+						Title:    strings.TrimSuffix(parts[len(parts)-1], ".pdf"),
+						FileName: parts[len(parts)-1],
+						FilePath: path,
+					})
+				}
+			}
+			return nil
+		})
+	
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "获取报表列表失败：" + err.Error()})
+			return
+		}
+	
+		c.JSON(http.StatusOK, gin.H{
+			"reports": allFiles,
+		})
+	})
+	
 	r.POST("/api/download", func(c *gin.Context) {
 		var req DownloadRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
