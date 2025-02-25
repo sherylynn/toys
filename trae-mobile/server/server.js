@@ -29,6 +29,26 @@ wss.on('connection', (ws) => {
         return theClipboard
       `;
 
+      const checkTraeUIScript = `
+        tell application "System Events"
+          tell process "Trae"
+            try
+              -- 尝试获取AI对话界面的状态
+              set aiDialogWindow to window 1
+              set windowTitle to title of aiDialogWindow
+              -- 如果窗口标题包含特定文本，说明AI对话界面已打开
+              if windowTitle contains "AI对话" then
+                return "open"
+              else
+                return "closed"
+              end if
+            on error
+              return "error"
+            end try
+          end tell
+        end tell
+      `;
+
       const sendMessageScript = `
         -- 先将消息内容存入剪贴板
         set the clipboard to "${data.message}"
@@ -38,12 +58,12 @@ wss.on('connection', (ws) => {
         end tell
         tell application "System Events"
           tell process "Trae"
-            -- 使用快捷键切换到Builder模式
-            keystroke "b" using {command down, shift down}
-            delay 0.5
-            -- 使用Tab键导航到输入框
-            keystroke tab
-            delay 0.2
+            -- 检查AI对话界面状态
+            if not (exists window 1 whose title contains "AI对话") then
+              -- 如果AI对话界面未打开，使用Command+U打开
+              keystroke "u" using command down
+              delay 1
+            end if
             -- 粘贴消息并发送
             keystroke "v" using command down
             delay 0.1
