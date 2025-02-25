@@ -61,6 +61,11 @@ echo "正在启动服务..."
 npm run dev &
 FRONTEND_PID=$!
 
+# 等待几秒钟确保前端服务启动完成
+sleep 3
+# 打开默认浏览器访问前端页面
+open http://localhost:5173
+
 # 启动后端文件监控服务
 ${VIRTUAL_ENV}/bin/python3 watch_server.py &
 BACKEND_PID=$!
