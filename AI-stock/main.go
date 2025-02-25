@@ -343,13 +343,16 @@ func main() {
 				fmt.Printf("遍历目录出错 [%s]: %v\n", path, err)
 				return err
 			}
-	
+
 			// 只处理PDF文件
 			if !info.IsDir() && strings.HasSuffix(strings.ToLower(path), ".pdf") {
+				// 统一使用正斜杠作为路径分隔符
+				path = filepath.ToSlash(path)
+				fmt.Printf("发现PDF文件：%s\n", path)
+
 				// 从路径中提取信息
 				relPath := strings.TrimPrefix(path, "downloads/")
 				parts := strings.Split(relPath, "/")
-				fmt.Printf("发现PDF文件：%s\n", path)
 				
 				if len(parts) >= 2 {
 					company := parts[0]
