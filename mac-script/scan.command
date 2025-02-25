@@ -9,29 +9,75 @@ fi
 # 定义历史IP文件路径
 ip_history_file="$(dirname $0)/ip.txt"
 
+# 获取本机192.168.x.x网段的IP地址
+local_ip=$(ifconfig | grep "inet " | grep "192\.168\." | awk '{print $2}' | head -n 1)
+
+# 如果没有找到192.168.x.x网段的IP地址
+if [ -z "$local_ip" ]; then
+    echo "错误：未找到192.168.x.x网段的IP地址"
+    echo "请确保您的设备已连接到正确的网络"
+    exit 1
+fi
+
 # 如果历史IP文件存在，先尝试连接历史IP
 if [ -f "$ip_history_file" ]; then
     echo "发现历史IP记录，优先尝试连接..."
     connected=false
     
+    # 获取当前设备的网段
+    current_subnet=$(echo $local_ip | cut -d. -f1-3)
+
+    # 读取所有历史IP并按网段排序
     while IFS= read -r ip || [ -n "$ip" ]; do
-        echo "\n尝试连接历史IP: $ip"
-        adb connect $ip:5555
-        sleep 2
-        
-        if adb devices | grep -q "$ip:5555.*device"; then
-            echo "成功连接到设备: $ip"
-            sc $ip &
-            sleep 2
-            sca $ip &
-            sleep 2 
-            scb $ip
-            connected=true
-            break
-        else
-            echo "无法连接到历史IP: $ip"
+        if [ -n "$ip" ]; then
+            ip_subnet=$(echo $ip | cut -d. -f1-3)
+            if [ "$ip_subnet" = "$current_subnet" ]; then
+                echo "\n尝试连接同网段历史IP: $ip"
+                adb connect $ip:5555
+                sleep 2
+                
+                if adb devices | grep -q "$ip:5555.*device"; then
+                    echo "成功连接到设备: $ip"
+                    sc $ip &
+                    sleep 2
+                    sca $ip &
+                    sleep 2 
+                    scb $ip
+                    connected=true
+                    break
+                else
+                    echo "无法连接到历史IP: $ip"
+                fi
+            fi
         fi
     done < "$ip_history_file"
+
+    # 如果同网段连接失败，尝试其他网段的IP
+    if [ "$connected" = false ]; then
+        while IFS= read -r ip || [ -n "$ip" ]; do
+            if [ -n "$ip" ]; then
+                ip_subnet=$(echo $ip | cut -d. -f1-3)
+                if [ "$ip_subnet" != "$current_subnet" ]; then
+                    echo "\n尝试连接其他网段历史IP: $ip"
+                    adb connect $ip:5555
+                    sleep 2
+                    
+                    if adb devices | grep -q "$ip:5555.*device"; then
+                        echo "成功连接到设备: $ip"
+                        sc $ip &
+                        sleep 2
+                        sca $ip &
+                        sleep 2 
+                        scb $ip
+                        connected=true
+                        break
+                    else
+                        echo "无法连接到历史IP: $ip"
+                    fi
+                fi
+            fi
+        done < "$ip_history_file"
+    fi
     
     if [ "$connected" = true ]; then
         exit 0
