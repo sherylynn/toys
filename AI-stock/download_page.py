@@ -35,19 +35,33 @@ def download_page(company_name):
         # 确保页面完全加载
         time.sleep(3)
 
-        # 获取页面内容
-        page_content = driver.page_source
+        # 确保页面完全加载
+        wait.until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(), '利润分配') and contains(text(), '2023')]")))
+
+        # 查找包含最近一年的“利润分配”字样的元素并点击
+        profit_distribution_link = driver.find_element(By.XPATH, "//a[contains(text(), '利润分配') and contains(text(), '2023')]")
+        profit_distribution_link.click()
+
+        # 等待PDF链接出现
+        wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, ".pdf")))
+
+        # 获取PDF链接
+        pdf_link = driver.find_element(By.PARTIAL_LINK_TEXT, ".pdf").get_attribute("href")
+
+        # 下载PDF文件
+        pdf_response = driver.request('GET', pdf_link)
+        pdf_content = pdf_response.content
 
         # 创建输出目录
         output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dividend_reports", company_name)
         os.makedirs(output_dir, exist_ok=True)
 
-        # 保存页面内容
-        output_file = os.path.join(output_dir, "search_results.html")
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write(page_content)
+        # 保存PDF文件
+        output_file = os.path.join(output_dir, "dividend_report.pdf")
+        with open(output_file, "wb") as f:
+            f.write(pdf_content)
 
-        print(f"页面已保存到: {output_file}")
+        print(f"PDF已保存到: {output_file}")
 
     except TimeoutException:
         print("错误：页面加载超时")
