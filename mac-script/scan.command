@@ -52,31 +52,9 @@ if [ -f "$ip_history_file" ]; then
         fi
     done < "$ip_history_file"
 
-    # 如果同网段连接失败，尝试其他网段的IP
+    # 不尝试连接其他网段的IP
     if [ "$connected" = false ]; then
-        while IFS= read -r ip || [ -n "$ip" ]; do
-            if [ -n "$ip" ]; then
-                ip_subnet=$(echo $ip | cut -d. -f1-3)
-                if [ "$ip_subnet" != "$current_subnet" ]; then
-                    echo "\n尝试连接其他网段历史IP: $ip"
-                    adb connect $ip:5555
-                    sleep 2
-                    
-                    if adb devices | grep -q "$ip:5555.*device"; then
-                        echo "成功连接到设备: $ip"
-                        sc $ip &
-                        sleep 2
-                        sca $ip &
-                        sleep 2 
-                        scb $ip
-                        connected=true
-                        break
-                    else
-                        echo "无法连接到历史IP: $ip"
-                    fi
-                fi
-            fi
-        done < "$ip_history_file"
+        echo "\n当前网段内未找到可用设备，跳过其他网段扫描..."
     fi
     
     if [ "$connected" = true ]; then
@@ -104,7 +82,7 @@ echo "正在扫描局域网内开启5555端口的设备..."
 
 # 使用nmap扫描局域网内开启5555端口的设备，增加详细输出
 echo "\n开始扫描..."
-nmap_output=$(nmap -p 5555 -v --open $subnet_range)
+nmap_output=$(nmap -p 5555 -T4 -Pn -v --open $subnet_range)
 
 # 显示扫描进度和结果
 echo "$nmap_output" | grep "Scanning" | sed 's/Scanning/正在扫描:/g'
