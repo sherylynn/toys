@@ -43,3 +43,5 @@ yarn-error.log*
 output/
 
 html_files/
+
+dividend_reports/
