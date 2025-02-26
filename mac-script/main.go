@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/lynn/mac-script/adb"
 )
 
 const (
@@ -101,32 +102,49 @@ func readHistoryIPs(filePath string) ([]string, error) {
 // 连接ADB设备并检查设备信息
 func connectAndCheckDevice(ip string) bool {
 	target := fmt.Sprintf("%s:%d", ip, ADBPort)
-	cmd := exec.Command("adb", "connect", target)
-	output, err := cmd.CombinedOutput()
+
+	// 获取程序根目录
+	execPath, err := os.Executable()
 	if err != nil {
+		fmt.Printf("错误：无法获取执行文件路径 %v\n", err)
 		return false
 	}
+
+	// 设置ADB密钥目录
+	adbKeysDir := filepath.Join(filepath.Dir(execPath), "adb_keys")
+	privateKeyPath := filepath.Join(adbKeysDir, "adbkey")
+	publicKeyPath := filepath.Join(adbKeysDir, "adbkey.pub")
+
+	// 初始化ADB密钥
+	if err := adb.InitializeADBKeys(adbKeysDir, privateKeyPath, publicKeyPath); err != nil {
+		fmt.Printf("初始化ADB密钥失败: %v\n", err)
+		return false
+	}
+
+	// 创建ADB客户端
+	client := adb.NewClient()
+
+	// 连接设备
+	fmt.Printf("正在尝试连接设备 %s...\n", target)
+	if err := client.Connect(target); err != nil {
+		fmt.Printf("连接设备失败: %v\n", err)
+		return false
+	}
+	fmt.Printf("成功建立TCP连接\n")
 
 	// 等待设备连接
+	fmt.Println("等待ADB认证和握手...")
 	time.Sleep(2 * time.Second)
 
-	// 检查设备连接状态
-	cmd = exec.Command("adb", "devices")
-	output, err = cmd.CombinedOutput()
-	if err != nil || !strings.Contains(string(output), target) {
-		return false
-	}
-
 	// 获取设备型号
-	cmd = exec.Command("adb", "-s", target, "shell", "getprop", "ro.product.model")
-	output, err = cmd.CombinedOutput()
+	fmt.Println("尝试获取设备信息...")
+	deviceName, err := client.GetDeviceProperty("ro.product.model")
 	if err != nil {
+		fmt.Printf("获取设备信息失败: %v\n", err)
 		return false
 	}
 
-	deviceName := strings.TrimSpace(string(output))
 	fmt.Printf("设备型号: %s\n", deviceName)
-
 	return true
 }
 
