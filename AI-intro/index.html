@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康科普 - 科技与健康的融合</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入Google字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-text">Health<span class="highlight">Tech</span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">首页</a></li>
+                <li><a href="#health-knowledge">健康知识</a></li>
+                <li><a href="#self-test">健康自测</a></li>
+                <li><a href="#data-visualization">数据可视化</a></li>
+                <li><a href="#about">关于我们</a></li>
+            </ul>
+            <div class="hamburger">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </nav>
+
+        <!-- 主页面区域 -->
+        <section id="home" class="hero-section">
+            <div class="hero-content">
+                <h1>科技赋能<span class="highlight">公共健康</span></h1>
+                <p>探索前沿健康科技，掌握科学健康知识，提升生活品质</p>
+                <button class="cta-button">开始探索 <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="hero-image">
+                <div class="tech-circle"></div>
+                <img src="./images/health-tech.svg" alt="健康科技插图">
+            </div>
+        </section>
+
+        <!-- 健康知识区域 -->
+        <section id="health-knowledge" class="section">
+            <div class="section-header">
+                <h2>健康<span class="highlight">知识库</span></h2>
+                <p>基于科学研究的最新健康信息</p>
+            </div>
+            <div class="knowledge-cards">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-virus"></i></div>
+                    <h3>传染病防控</h3>
+                    <p>了解最新传染病防控知识，保护自己和家人的健康安全</p>
+                    <a href="#" class="card-link">了解更多 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-heartbeat"></i></div>
+                    <h3>心脏健康</h3>
+                    <p>掌握心脏保健知识，预防心血管疾病的发生</p>
+                    <a href="#" class="card-link">了解更多 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-brain"></i></div>
+                    <h3>心理健康</h3>
+                    <p>关注心理健康，学习压力管理和情绪调节技巧</p>
+                    <a href="#" class="card-link">了解更多 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-apple-alt"></i></div>
+                    <h3>营养与饮食</h3>
+                    <p>科学饮食指南，均衡营养摄入的关键知识</p>
+                    <a href="#" class="card-link">了解更多 <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 健康自测工具 -->
+        <section id="self-test" class="section">
+            <div class="section-header">
+                <h2>健康<span class="highlight">自测工具</span></h2>
+                <p>通过互动式工具评估您的健康状况</p>
+            </div>
+            <div class="test-container">
+                <div class="test-card">
+                    <h3>BMI 计算器</h3>
+                    <div class="test-form">
+                        <div class="form-group">
+                            <label for="height">身高 (cm)</label>
+                            <input type="number" id="height" placeholder="例如：170">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">体重 (kg)</label>
+                            <input type="number" id="weight" placeholder="例如：65">
+                        </div>
+                        <button id="calculate-bmi" class="test-button">计算 BMI</button>
+                    </div>
+                    <div id="bmi-result" class="test-result">
+                        <div class="result-value">--</div>
+                        <div class="result-label">您的 BMI 指数</div>
+                        <div class="result-description">填写身高和体重，点击计算按钮查看结果</div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <h3>健康风险评估</h3>
+                    <p>回答几个简单问题，评估您的健康风险因素</p>
+                    <button class="test-button">开始评估</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数据可视化区域 -->
+        <section id="data-visualization" class="section">
+            <div class="section-header">
+                <h2>健康<span class="highlight">数据可视化</span></h2>
+                <p>直观了解全球和本地公共健康数据</p>
+            </div>
+            <div class="visualization-container">
+                <div class="chart-container">
+                    <h3>全球传染病趋势</h3>
+                    <div id="disease-chart" class="chart"></div>
+                </div>
+                <div class="chart-container">
+                    <h3>健康生活方式影响</h3>
+                    <div id="lifestyle-chart" class="chart"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="section">
+            <div class="section-header">
+                <h2>关于<span class="highlight">我们</span></h2>
+                <p>致力于通过科技提升公共健康水平</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>我们是一个由医疗专业人士、数据科学家和技术专家组成的团队，致力于将复杂的健康知识转化为易于理解的信息，帮助公众做出更明智的健康决策。</p>
+                    <p>通过结合最新的科学研究和创新技术，我们希望改变人们获取健康信息的方式，提高公共健康意识，最终改善全球健康状况。</p>
+                    <div class="team-stats">
+                        <div class="stat">
+                            <div class="stat-number">15+</div>
+                            <div class="stat-label">医学专家</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">研究论文</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">100万+</div>
+                            <div class="stat-label">用户受益</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>联系我们</h3>
+                    <form>
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" id="name" placeholder="您的姓名">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" placeholder="您的邮箱地址">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">留言</label>
+                            <textarea id="message" placeholder="您想告诉我们什么？"></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">Health<span class="highlight">Tech</span></span>
+                    <p>科技赋能健康生活</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>快速链接</h4>
+                        <ul>
+                            <li><a href="#home">首页</a></li>
+                            <li><a href="#health-knowledge">健康知识</a></li>
+                            <li><a href="#self-test">健康自测</a></li>
+                            <li><a href="#data-visualization">数据可视化</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>资源</h4>
+                        <ul>
+                            <li><a href="#">健康博客</a></li>
+                            <li><a href="#">研究论文</a></li>
+                            <li><a href="#">健康工具</a></li>
+                            <li><a href="#">常见问题</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>关注我们</h4>
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-weixin"></i></a>
+                            <a href="#"><i class="fab fa-weibo"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 HealthTech. 保留所有权利。</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
