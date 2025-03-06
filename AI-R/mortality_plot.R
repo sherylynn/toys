@@ -13,19 +13,19 @@ data_long <- melt(data, id.vars = "年度",
 # 创建图表
 p <- ggplot(data_long, aes(x = 年度, y = 值, color = 指标, group = 指标)) +
   geom_line(size = 1, linetype = "solid") +
-  geom_point(aes(shape = 指标), size = 3, fill = "white") +
+  geom_point(aes(shape = 指标), size = 3) +
   scale_color_manual(values = c("男性死亡率" = "#4E79A7", 
                              "男性标化率" = "#76B7B2", 
                              "女性死亡率" = "#F28E2B", 
                              "女性标化率" = "#E15759", 
                              "合计死亡率" = "#59A14F", 
                              "合计标化率" = "#B07AA1")) +
-  scale_shape_manual(values = c("男性死亡率" = 21, 
-                             "男性标化率" = 22, 
-                             "女性死亡率" = 23, 
-                             "女性标化率" = 24, 
-                             "合计死亡率" = 25, 
-                             "合计标化率" = 21)) +
+  scale_shape_manual(values = c("男性死亡率" = 16, 
+                             "男性标化率" = 17, 
+                             "女性死亡率" = 15, 
+                             "女性标化率" = 18, 
+                             "合计死亡率" = 19, 
+                             "合计标化率" = 14)) +
   scale_y_continuous(limits = c(0, 85), breaks = seq(0, 85, by = 10)) +
   labs(title = "2011-2021年死亡率和标化率趋势",
        x = "年份",
