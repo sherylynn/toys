@@ -12,28 +12,39 @@ data_long <- melt(data, id.vars = "年度",
 
 # 创建图表
 p <- ggplot(data_long, aes(x = 年度, y = 值, color = 指标, group = 指标)) +
-  geom_line(size = 1.2, linetype = "solid") +
-  geom_point(size = 3, shape = 19) +
-  scale_color_manual(values = c("男性死亡率" = "#1f77b4", 
-                             "男性标化率" = "#aec7e8", 
-                             "女性死亡率" = "#d62728", 
-                             "女性标化率" = "#ff9896", 
-                             "合计死亡率" = "#9467bd", 
-                             "合计标化率" = "#ff7f0e")) +
+  geom_line(size = 1, linetype = "solid") +
+  geom_point(aes(shape = 指标), size = 3, fill = "white") +
+  scale_color_manual(values = c("男性死亡率" = "#4E79A7", 
+                             "男性标化率" = "#76B7B2", 
+                             "女性死亡率" = "#F28E2B", 
+                             "女性标化率" = "#E15759", 
+                             "合计死亡率" = "#59A14F", 
+                             "合计标化率" = "#B07AA1")) +
+  scale_shape_manual(values = c("男性死亡率" = 21, 
+                             "男性标化率" = 22, 
+                             "女性死亡率" = 23, 
+                             "女性标化率" = 24, 
+                             "合计死亡率" = 25, 
+                             "合计标化率" = 21)) +
   scale_y_continuous(limits = c(0, 85), breaks = seq(0, 85, by = 10)) +
   labs(title = "2011-2021年死亡率和标化率趋势",
        x = "年份",
-       y = "死亡率/标化率",
-       color = "指标") +
+       y = "死亡率/标化率") +
   theme_minimal() +
-  theme(legend.position = "right",
+  theme(legend.position = "bottom",
+        legend.box = "vertical",
         plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-        axis.title = element_text(size = 14),
-        axis.text = element_text(size = 12),
-        legend.title = element_text(size = 14),
-        legend.text = element_text(size = 12),
-        panel.grid.major = element_line(color = "gray90"),
-        panel.grid.minor = element_line(color = "gray95"))
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 10),
+        panel.grid.major = element_line(color = "gray90", size = 0.2),
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA),
+        plot.background = element_rect(fill = "white", color = NA),
+        axis.line = element_line(color = "black", size = 0.5),
+        axis.ticks = element_line(color = "black", size = 0.5),
+        axis.ticks.length = unit(2, "pt"))
 
 # 显示图表
 print(p)
