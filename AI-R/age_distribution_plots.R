@@ -2,11 +2,10 @@
 library(ggplot2)
 library(reshape2)
 
-# 读取Excel数据
-data <- read.csv("age_data.csv", fileEncoding = "UTF-8")
-
-# 设置年龄组的因子水平顺序
-age_levels <- colnames(data)[-1]  # 除去第一列的所有列名作为年龄组水平
+# 读取数据
+data <- read.csv("age_data.csv", fileEncoding = "UTF-8", check.names = FALSE)
+# 获取年龄组列名
+age_levels <- colnames(data)[-1]  # 除去第一列的所有列名
 
 # 提取发病率数据
 incidence_data <- data[1:3, ]  # 选择前三行（合计、男性、女性发病率）
@@ -17,6 +16,9 @@ colnames(incidence_data)[1] <- "指标"
 incidence_long <- melt(incidence_data, id.vars = "指标", 
                      variable.name = "年龄组", 
                      value.name = "发病率")
+
+# 设置年龄组为因子型变量，使用从数据中读取的顺序
+incidence_long$年龄组 <- factor(incidence_long$年龄组, levels = age_levels)
 
 # 创建发病率图表
 p1 <- ggplot(incidence_long, aes(x = 年龄组, y = 发病率, color = 指标, group = 指标)) +
@@ -56,6 +58,9 @@ mortality_long <- melt(mortality_data, id.vars = "指标",
                      variable.name = "年龄组", 
                      value.name = "死亡率")
 
+# 设置年龄组为因子型变量，使用从数据中读取的顺序
+mortality_long$年龄组 <- factor(mortality_long$年龄组, levels = age_levels)
+
 # 创建死亡率图表
 p2 <- ggplot(mortality_long, aes(x = 年龄组, y = 死亡率, color = 指标, group = 指标)) +
   geom_line(size = 1) +
@@ -85,5 +90,5 @@ p2 <- ggplot(mortality_long, aes(x = 年龄组, y = 死亡率, color = 指标, g
         axis.ticks.length = unit(2, "pt"))
 
 # 保存图表
-ggsave("age_incidence_distribution.png", p1, width = 12, height = 8)
-ggsave("age_mortality_distribution.png", p2, width = 12, height = 8)
+ggsave("age_incidence_plot.png", p1, width = 10, height = 6)
+ggsave("age_mortality_plot.png", p2, width = 10, height = 6)
