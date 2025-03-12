@@ -1,0 +1,30 @@
+# 依赖
+node_modules/
+pnpm-lock.yaml
+
+# 构建产物
+dist/
+dist-electron/
+release/
+
+# 系统文件
+.DS_Store
+
+# 日志
+*.log
+
+# IDE配置
+.idea/
+.vscode/
+
+# 环境文件
+.env.local
+.env.development
+.env.production
+
+# 调试文件
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
