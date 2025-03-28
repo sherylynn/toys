@@ -36,6 +36,10 @@ GOOS=windows GOARCH=386 go build -o output/ai-stock-windows-x86.exe main.go
 echo "编译 Windows x64 版本..."
 GOOS=windows GOARCH=amd64 go build -o output/ai-stock-windows-x64.exe main.go
 
+# Android ARM64
+echo "编译 Android ARM64 版本..."
+GOOS=android GOARCH=arm64 go build -o output/ai-stock-android-arm64 main.go
+
 echo "编译完成！"
 echo "可执行文件已保存在 output 目录下："
 ls -l output/
