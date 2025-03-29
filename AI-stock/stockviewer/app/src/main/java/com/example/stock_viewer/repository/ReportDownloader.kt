@@ -1,8 +1,10 @@
 package com.example.stock_viewer.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Environment
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.example.stock_viewer.api.ApiClient
 import com.example.stock_viewer.api.Announcement
 import com.example.stock_viewer.api.CompanyInfo
@@ -202,8 +204,21 @@ class ReportDownloader(private val context: Context) {
      * @return 下载目录
      */
     private fun getDownloadDir(companyName: String, year: String): File {
-        val baseDir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "reports")
-        val companyDir = File(baseDir, companyName)
+        // 从设置中获取下载路径，默认为外部存储的Download目录
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val useCustomPath = prefs.getBoolean("use_custom_download_path", false)
+        val customPath = prefs.getString("download_path", "")
+        
+        val baseDir = if (useCustomPath && !customPath.isNullOrEmpty()) {
+            // 使用自定义路径
+            File(customPath)
+        } else {
+            // 使用默认路径（外部存储的Download目录）
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        }
+        
+        val reportsDir = File(baseDir, "reports")
+        val companyDir = File(reportsDir, companyName)
         val yearDir = File(companyDir, year)
         
         if (!yearDir.exists()) {

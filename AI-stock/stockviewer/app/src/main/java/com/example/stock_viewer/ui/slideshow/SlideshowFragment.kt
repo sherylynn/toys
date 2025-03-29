@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.stock_viewer.databinding.FragmentSlideshowBinding
 import com.example.stock_viewer.repository.CompanyReports
 import com.example.stock_viewer.repository.ReportFile
+import android.content.Intent
+import java.io.File
+import androidx.core.content.FileProvider
 
 class SlideshowFragment : Fragment() {
 
@@ -87,7 +90,24 @@ class SlideshowFragment : Fragment() {
             // 这里可以添加打开报表文件的逻辑，例如跳转到报表查看页面
             val filePath = slideshowViewModel.getReportFilePath(reportFile.filePath)
             if (filePath != null) {
-                // TODO: 打开报表文件
+                try {
+                    // 使用MuPDF的DocumentActivity打开PDF文件
+                    val file = File(filePath)
+                    val intent = Intent(requireContext(), com.artifex.mupdf.viewer.DocumentActivity::class.java)
+                    intent.action = Intent.ACTION_VIEW
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    val uri = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.example.stock_viewer.fileprovider",
+                        file
+                    )
+                    intent.setDataAndType(uri, "application/pdf")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    // 如果出现异常，打印日志
+                    android.util.Log.e("SlideshowFragment", "打开PDF文件失败: ${e.message}")
+                    e.printStackTrace()
+                }
             }
         }
         

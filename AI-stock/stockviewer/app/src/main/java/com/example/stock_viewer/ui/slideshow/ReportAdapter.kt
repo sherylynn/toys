@@ -87,7 +87,7 @@ class ReportAdapter(
                     val reportView = LayoutInflater.from(itemView.context)
                         .inflate(R.layout.item_report_file, containerReports, false)
                     
-                    val textFileName = reportView.findViewById<TextView>(R.id.text_file_name)
+                    val textFileName = reportView.findViewById<TextView>(R.id.text_report_title)
                     textFileName.text = report.title
                     
                     // 设置点击事件

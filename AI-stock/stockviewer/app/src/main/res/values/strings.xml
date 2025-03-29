@@ -25,6 +25,14 @@
     <string name="no_reports">暂无已下载的财报</string>
     <string name="loading">加载中…</string>
     <string name="error_loading_reports">加载财报列表失败</string>
+    
+    <!-- 设置相关 -->
+    <string name="settings_title">设置</string>
+    <string name="download_path_title">财报下载路径</string>
+    <string name="use_custom_download_path">使用自定义下载路径</string>
+    <string name="current_path">当前路径：%1$s</string>
+    <string name="select_path">选择路径</string>
+    <string name="path_note">注意：默认下载到外部存储的Download目录下</string>
 
     <string name="lorem_ipsum_title">Lorem Ipsum"</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply placeholder text of the printing and
