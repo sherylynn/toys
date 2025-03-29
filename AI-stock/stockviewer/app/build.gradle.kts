@@ -61,8 +61,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     
     // MuPDF PDF渲染引擎 - 使用Artifex官方Maven仓库
-    implementation("com.artifex.mupdf:mini:1.16.1")
-    implementation("com.artifex.mupdf:fitz:1.16.1")
+    implementation("com.artifex.mupdf:viewer:1.25.+")
     
     // Coroutines for async operations
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")

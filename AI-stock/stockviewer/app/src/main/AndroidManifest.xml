@@ -47,19 +47,19 @@
         <!-- MuPDF components -->
         <activity
             android:name="com.artifex.mupdf.viewer.DocumentActivity"
-            android:exported="false"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name="com.artifex.mupdf.mini.DocumentActivity"
-            android:exported="false"
+            android:exported="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
-            tools:replace="android:configChanges" />
-        <activity
-            android:name="com.artifex.mupdf.viewer.PrintDialogActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+            tools:replace="android:configChanges"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

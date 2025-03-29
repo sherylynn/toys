@@ -93,9 +93,14 @@ class SlideshowFragment : Fragment() {
                 try {
                     // 使用MuPDF的DocumentActivity打开PDF文件
                     val file = File(filePath)
-                    val intent = Intent(requireContext(), com.artifex.mupdf.mini.DocumentActivity::class.java)
+                    val intent = Intent(requireContext(), com.artifex.mupdf.viewer.DocumentActivity::class.java)
                     intent.action = Intent.ACTION_VIEW
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    // 启用连续滚动模式并设置页面间距
+                    intent.putExtra("viewmode", "scroll")
+                    intent.putExtra("continuous", true)
+                    intent.putExtra("page_margin", 16)  // 设置页面间距为16像素
+                    // 设置文件类型和URI
                     val uri = FileProvider.getUriForFile(
                         requireContext(),
                         "com.example.stock_viewer.fileprovider",
