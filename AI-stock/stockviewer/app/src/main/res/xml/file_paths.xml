@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 默认下载目录 -->
-    <external-path name="downloads" path="Download/reports"/>
+    <external-path name="downloads" path="Download"/>
+    <external-path name="downloads_reports" path="Download/reports"/>
     <!-- 自定义下载根目录 -->
     <root-path name="custom_root" path="."/>
     <!-- 支持自定义下载路径 -->

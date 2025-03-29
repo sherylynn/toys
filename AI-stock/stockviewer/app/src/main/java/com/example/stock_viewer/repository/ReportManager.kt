@@ -21,11 +21,25 @@ class ReportManager(private val context: Context) {
         val prefs = context.getSharedPreferences("StockViewerPrefs", Context.MODE_PRIVATE)
         val useCustomPath = prefs.getBoolean("use_custom_download_path", false)
         val customPath = prefs.getString("download_path", "")
-        return if (useCustomPath && !customPath.isNullOrEmpty()) {
-            File(customPath ?: "", "reports")
+        val formattedPath = when {
+            customPath?.startsWith("content://") == true -> customPath
+            customPath?.startsWith("/tree/primary:") == true -> customPath.replace("/tree/primary:", "/storage/emulated/0/")
+            customPath?.startsWith("file://") == true -> customPath
+            else -> "file://" + (customPath ?: "")
+        }
+        
+        val baseDir = if (useCustomPath && !formattedPath.isNullOrEmpty()) {
+            File(formattedPath ?: "", "reports")
         } else {
             File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
         }
+        
+        if (!baseDir.exists()) {
+            baseDir.mkdirs()
+            Log.d(TAG, "创建基础目录: ${baseDir.absolutePath}")
+        }
+        
+        return baseDir
     }
 
     /**

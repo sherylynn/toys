@@ -204,19 +204,10 @@ class ReportDownloader(private val context: Context) {
      * @return 下载目录
      */
     private fun getDownloadDir(companyName: String, year: String): File {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val useCustomPath = prefs.getBoolean("use_custom_download_path", false)
-        val customPath = prefs.getString("download_path", "")
-        
-        val baseDir = if (useCustomPath && !customPath.isNullOrEmpty()) {
-            File(customPath ?: "", "reports")
-        } else {
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
-        }
-        
+        val baseDir = ReportManager(context).getBaseDirectory()
         Log.d(TAG, "下载目录：${baseDir.absolutePath}")
-        val reportsDir = File(baseDir, "reports").apply { mkdirs() }
-        val companyDir = File(reportsDir, companyName)
+        
+        val companyDir = File(baseDir, companyName)
         val yearDir = File(companyDir, year)
         
         if (!yearDir.exists()) {

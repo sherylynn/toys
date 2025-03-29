@@ -2,6 +2,7 @@ package com.example.stock_viewer.ui.settings
 
 import android.app.Application
 import android.os.Environment
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,7 +30,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val useCustomPath: LiveData<Boolean> = _useCustomPath
     
     // 偏好设置
-    private val prefs = PreferenceManager.getDefaultSharedPreferences(application)
+    private val prefs = application.getSharedPreferences("StockViewerPrefs", Context.MODE_PRIVATE)
     
     /**
      * 设置是否使用自定义下载路径
@@ -43,8 +44,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
      * 设置自定义下载路径
      */
     fun setDownloadPath(path: String) {
-        prefs.edit().putString("download_path", path).apply()
-        _downloadPath.value = path
+        // 转换路径格式
+        val formattedPath = when {
+            path.startsWith("content://") -> path
+            path.startsWith("/tree/primary:") -> path.replace("/tree/primary:", "/storage/emulated/0/")
+            else -> "file://" + path
+        }
+        prefs.edit().putString("download_path", formattedPath).apply()
+        _downloadPath.value = formattedPath
     }
     
     /**
