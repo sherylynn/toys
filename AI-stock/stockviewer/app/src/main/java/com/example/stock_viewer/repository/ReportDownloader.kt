@@ -211,13 +211,13 @@ class ReportDownloader(private val context: Context) {
         
         val baseDir = if (useCustomPath && !customPath.isNullOrEmpty()) {
             // 使用自定义路径
-            File(customPath)
+            File(customPath).also { it.mkdirs() }
         } else {
             // 使用默认路径（外部存储的Download目录）
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).also { it.mkdirs() }
         }
         
-        val reportsDir = File(baseDir, "reports")
+        val reportsDir = File(baseDir, "reports").apply { mkdirs() }
         val companyDir = File(reportsDir, companyName)
         val yearDir = File(companyDir, year)
         

@@ -19,7 +19,7 @@ class ReportManager(private val context: Context) {
      * @return 按公司和年份组织的财报列表
      */
     fun getReportList(): List<CompanyReports> {
-        val baseDir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "reports")
+        val baseDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
         if (!baseDir.exists()) {
             return emptyList()
         }
