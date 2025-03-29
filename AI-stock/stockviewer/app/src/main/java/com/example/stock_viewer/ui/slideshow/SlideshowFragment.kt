@@ -93,7 +93,7 @@ class SlideshowFragment : Fragment() {
                 try {
                     // 使用MuPDF的DocumentActivity打开PDF文件
                     val file = File(filePath)
-                    val intent = Intent(requireContext(), com.artifex.mupdf.viewer.DocumentActivity::class.java)
+                    val intent = Intent(requireContext(), com.artifex.mupdf.mini.DocumentActivity::class.java)
                     intent.action = Intent.ACTION_VIEW
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     val uri = FileProvider.getUriForFile(
