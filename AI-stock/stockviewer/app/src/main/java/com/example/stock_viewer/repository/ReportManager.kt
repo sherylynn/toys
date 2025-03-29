@@ -15,11 +15,33 @@ class ReportManager(private val context: Context) {
     }
     
     /**
+     * 获取当前配置的报表存储目录
+     */
+    fun getBaseDirectory(): File {
+        val prefs = context.getSharedPreferences("StockViewerPrefs", Context.MODE_PRIVATE)
+        val useCustomPath = prefs.getBoolean("use_custom_download_path", false)
+        val customPath = prefs.getString("download_path", "")
+        return if (useCustomPath && !customPath.isNullOrEmpty()) {
+            File(customPath ?: "", "reports")
+        } else {
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
+        }
+    }
+
+    /**
      * 获取所有已下载的财报列表
      * @return 按公司和年份组织的财报列表
      */
     fun getReportList(): List<CompanyReports> {
-        val baseDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
+        val prefs = context.getSharedPreferences("StockViewerPrefs", Context.MODE_PRIVATE)
+        val useCustomPath = prefs.getBoolean("use_custom_download_path", false)
+        val customPath = prefs.getString("download_path", "")
+        Log.d(TAG, "当前下载路径配置: useCustomPath=$useCustomPath, customPath=$customPath")
+        val baseDir = if (useCustomPath && !customPath.isNullOrEmpty()) {
+            File(customPath ?: "", "reports")
+        } else {
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
+        }
         if (!baseDir.exists()) {
             return emptyList()
         }

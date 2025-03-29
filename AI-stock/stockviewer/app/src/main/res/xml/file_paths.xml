@@ -4,6 +4,9 @@
     <external-path name="downloads" path="Download/reports"/>
     <!-- 自定义下载根目录 -->
     <root-path name="custom_root" path="."/>
+    <!-- 支持自定义下载路径 -->
+    <external-path name="custom_reports_root" path="." />
+<external-path name="custom_reports" path="reports" />
     <!-- 兼容旧配置 -->
     <external-path name="external_files" path="."/>
     <external-files-path name="external_files_path" path="."/>
