@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">股票查看器</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">股票查看器</string>
+    <string name="nav_header_subtitle">财报下载与查看</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">设置</string>
+
+    <string name="menu_transform">公司搜索</string>
+    <string name="menu_reflow">财报下载</string>
+    <string name="menu_slideshow">财报浏览</string>
+    <string name="menu_settings">设置</string>
+    
+    <!-- 财报下载相关 -->
+    <string name="company_name_hint">请输入公司名称</string>
+    <string name="year_hint">请选择年份</string>
+    <string name="download_button">下载财报</string>
+    <string name="downloading">正在下载…</string>
+    <string name="download_success">下载成功</string>
+    <string name="download_failed">下载失败</string>
+    <string name="no_company_name">请输入公司名称</string>
+    
+    <!-- 财报浏览相关 -->
+    <string name="no_reports">暂无已下载的财报</string>
+    <string name="loading">加载中…</string>
+    <string name="error_loading_reports">加载财报列表失败</string>
+
+    <string name="lorem_ipsum_title">Lorem Ipsum"</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply placeholder text of the printing and
+        typesetting industry. Lorem Ipsum has been the industry\'s standard placeholder text ever
+        since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
+        type specimen book"
+    </string>
+    <string name="fab_content_description">Represents a view to invoke an action</string>
+    <string name="image_view_item_transform_content_description">Represents an image view in the
+        item
+    </string>
+</resources>
