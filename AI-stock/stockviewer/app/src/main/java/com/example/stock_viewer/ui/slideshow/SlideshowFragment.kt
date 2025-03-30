@@ -92,7 +92,13 @@ class SlideshowFragment : Fragment() {
             STORAGE_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // 权限授予后重新执行打开操作
-                    binding.recyclerReports.adapter?.notifyDataSetChanged()
+                    val selectedReport = (binding.recyclerReports.adapter as? ReportAdapter)?.selectedReport
+                    selectedReport?.let {
+                        val filePath = slideshowViewModel.getReportFilePath(it.filePath)
+                        filePath?.let { path ->
+                            openPdfFile(File(path))
+                        }
+                    }
                 } else {
                     Toast.makeText(requireContext(), "需要存储权限查看报表", Toast.LENGTH_SHORT).show()
                 }
@@ -135,6 +141,7 @@ class SlideshowFragment : Fragment() {
                     }
 
                     val file = File(filePath)
+                    Log.d("PDFPath", "正在打开PDF文件：${file.absolutePath}")
                     if (!file.exists()) {
                         Log.e("SlideshowFragment", "文件不存在: $filePath")
                         return@ReportAdapter
@@ -162,6 +169,7 @@ class SlideshowFragment : Fragment() {
                 } catch (e: Exception) {
                     // 如果出现异常，打印日志
                     android.util.Log.e("SlideshowFragment", "打开PDF文件失败: ${e.message}")
+                    Toast.makeText(requireContext(), "打开文件失败: ${e.message}", Toast.LENGTH_LONG).show()
                     e.printStackTrace()
                 }
             }

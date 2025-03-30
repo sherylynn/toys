@@ -1,8 +1,13 @@
 package com.example.stock_viewer
 
 import android.os.Bundle
+import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -15,12 +20,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.stock_viewer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val REQUEST_MANAGE_STORAGE = 1002
+    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkAndRequestStoragePermission()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
@@ -78,6 +87,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_MANAGE_STORAGE) {
+            checkAndRequestStoragePermission()
+        }
+    }
+
+    private fun checkAndRequestStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                showStoragePermissionDialog()
+            }
+        }
+    }
+
+    private fun showStoragePermissionDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("需要存储权限")
+            .setMessage("本应用需要管理外部存储权限以访问报表文件")
+            .setPositiveButton("去设置") { _, _ ->
+                openStorageSettings()
+            }
+            .setNegativeButton("取消") { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun openStorageSettings() {
+        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+            data = Uri.parse("package:$packageName")
+        }
+        startActivityForResult(intent, REQUEST_MANAGE_STORAGE)
     }
 
     override fun onSupportNavigateUp(): Boolean {
