@@ -23,15 +23,36 @@ class ReportManager(private val context: Context) {
         val customPath = prefs.getString("download_path", "")
         val formattedPath = when {
             customPath?.startsWith("content://") == true -> customPath
-            customPath?.startsWith("/tree/primary:") == true -> customPath.replace("/tree/primary:", "/storage/emulated/0/")
-            customPath?.startsWith("file://") == true -> customPath
-            else -> "file://" + (customPath ?: "")
+            
+            else -> customPath?.takeIf { it.isNotEmpty() }?.let {
+                // 过滤冗余路径段
+                val sanitizedPath = if (it.contains("/document/primary:")) {
+                    // 移除/document/primary:及其后续内容
+                    val index = it.indexOf("/document/primary:")
+                    it.substring(0, index)
+                } else {
+                    it
+                }
+                val file = File(sanitizedPath)
+                try {
+                    file.canonicalPath
+                } catch (e: Exception) {
+                    file.absolutePath
+                }
+            }
+        }.also { path ->
+            Log.d(TAG, "路径规范化验证 -> \n原始路径: ${customPath}\n最终路径: $path")
         }
         
         val baseDir = if (useCustomPath && !formattedPath.isNullOrEmpty()) {
-            File(formattedPath ?: "", "reports")
+            File(File(formattedPath), "reports").apply {
+                if (!exists()) mkdirs()
+                Log.d(TAG, "最终存储目录: $absolutePath")
+            }
         } else {
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports").apply {
+                if (!exists()) mkdirs()
+            }
         }
         
         if (!baseDir.exists()) {
@@ -50,11 +71,31 @@ class ReportManager(private val context: Context) {
         val prefs = context.getSharedPreferences("StockViewerPrefs", Context.MODE_PRIVATE)
         val useCustomPath = prefs.getBoolean("use_custom_download_path", false)
         val customPath = prefs.getString("download_path", "")
-        Log.d(TAG, "当前下载路径配置: useCustomPath=$useCustomPath, customPath=$customPath")
-        val baseDir = if (useCustomPath && !customPath.isNullOrEmpty()) {
-            File(customPath ?: "", "reports")
+        val formattedPath = when {
+            customPath?.startsWith("content://") == true -> customPath
+            
+            else -> customPath?.takeIf { it.isNotEmpty() }?.let {
+                // 过滤冗余路径段
+                val sanitizedPath = if (it.contains("/document/primary:")) {
+                    // 移除/document/primary:及其后续内容
+                    val index = it.indexOf("/document/primary:")
+                    it.substring(0, index)
+                } else {
+                    it
+                }
+                File(sanitizedPath).absolutePath
+            }
+        }.also { path ->
+            Log.d(TAG, "路径规范化验证 -> \n原始路径: ${customPath}\n最终路径: $path")
+        }
+        Log.d(TAG, "当前下载路径配置: useCustomPath=$useCustomPath, formattedPath=$formattedPath")
+        val baseDir = if (useCustomPath && !formattedPath.isNullOrEmpty()) {
+            File(File(formattedPath), "reports").apply {
+                if (!exists()) mkdirs()
+                Log.d(TAG, "最终存储目录: $absolutePath")
+            }
         } else {
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "reports")
+            getBaseDirectory()
         }
         if (!baseDir.exists()) {
             return emptyList()
