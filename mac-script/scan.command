@@ -9,12 +9,12 @@ fi
 # 定义历史IP文件路径
 ip_history_file="$(dirname $0)/ip.txt"
 
-# 获取本机192.168.x.x网段的IP地址
-local_ip=$(ifconfig | grep "inet " | grep "192\.168\." | awk '{print $2}' | head -n 1)
+# 获取本机常见内网网段的IP地址（支持192.168/10/172）
+local_ip=$(ifconfig | grep "inet " | grep -E "192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\." | awk '{print $2}' | head -n 1)
 
-# 如果没有找到192.168.x.x网段的IP地址
+# 如果没有找到常见内网网段的IP地址
 if [ -z "$local_ip" ]; then
-    echo "错误：未找到192.168.x.x网段的IP地址"
+    echo "错误：未找到常见内网网段的IP地址"
     echo "请确保您的设备已连接到正确的网络"
     exit 1
 fi
@@ -63,20 +63,11 @@ if [ -f "$ip_history_file" ]; then
     echo "\n无法连接到任何历史IP，开始扫描网络..."
 fi
 
-# 获取本机192.168.x.x网段的IP地址
-local_ip=$(ifconfig | grep "inet " | grep "192\.168\." | awk '{print $2}' | head -n 1)
-
-# 如果没有找到192.168.x.x网段的IP地址
-if [ -z "$local_ip" ]; then
-    echo "错误：未找到192.168.x.x网段的IP地址"
-    echo "请确保您的设备已连接到正确的网络"
-    exit 1
-fi
-
-subnet=$(echo $local_ip | cut -d. -f1-3)
+# 自动识别网段
+subnet=$(echo $local_ip | awk -F. '{print $1"."$2"."$3}')
 subnet_range="$subnet.0/24"
 
-echo "本机IP地址(192.168.x.x): $local_ip"
+echo "本机IP地址: $local_ip"
 echo "扫描范围: $subnet_range"
 echo "正在扫描局域网内开启5555端口的设备..."
 
