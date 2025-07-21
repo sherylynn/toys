@@ -1,0 +1,29 @@
+# Binaries for Go backend
+bin/
+
+# Go module cache
+.go/
+
+# Frontend dependencies
+frontend/node_modules/
+
+# Frontend build output
+frontend/build/
+
+# Environment variables
+.env
+
+# Database files
+*.db
+
+# Log files
+*.log
+
+# Cypress files
+cypress/videos/
+cypress/screenshots/
+
+# IDE and OS generated files
+.idea/
+.vscode/
+.DS_Store
