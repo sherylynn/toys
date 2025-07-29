@@ -1,20 +1,16 @@
 {
-  "name": "ai-stock",
-  "version": "1.0.0",
-  "description": "AI财报分析系统",
+  "name": "ai-stock-value-investment",
+  "version": "2.0.0",
+  "description": "AI股票价值投资分析系统",
+  "main": "main.go",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "go run main.go",
+    "build": "go build main.go",
+    "test": "go test ./..."
   },
-  "dependencies": {
-    "axios": "^1.4.0",
-    "element-plus": "^2.3.8",
-    "vue": "^3.3.4",
-    "xlsx": "^0.18.5"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^4.4.0"
-  }
+  "keywords": ["stock", "value-investment", "analysis", "ai"],
+  "author": "AI Stock System",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
 }

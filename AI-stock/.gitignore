@@ -45,3 +45,24 @@ output/
 html_files/
 
 dividend_reports/
+
+# Go binaries
+ai-stock
+ai-stock-value
+main
+yunnan-test
+
+# Database
+positions.db
+
+# Generated files and caches
+cache/
+charts/
+reports/
+
+# Server logs
+server.log
+
+# Test files
+*.test
+*.tmp
