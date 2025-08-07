@@ -45,11 +45,6 @@ Both interfaces share the same core functionality but provide different user exp
 - **Tool Installation**: scrcpy (screen mirroring), nmap (network scanning)
 - **Environment Verification**: Checks for existing installations
 
-#### 5. Automation Support (`auto_accept.command`)
-- **AppleScript Integration**: Automated UI interaction for ADB authorization
-- **Target Application**: Monitors "Trae" application for authorization dialogs
-- **Button Automation**: Automatically clicks "全部接受" (Accept All) buttons
-
 ## Development Workflow
 
 ### Primary Scripts
@@ -60,36 +55,21 @@ Both interfaces share the same core functionality but provide different user exp
 # GUI-based management
 ./gui-launcher.command
 
+# Menu bar application
+./menu-bar-launcher.command
+
 # Install dependencies
 ./install.command
 
 # Create desktop shortcut
 ./create_shortcut.command
-
-# Auto-accept ADB authorizations
-./auto_accept.command
-
-# Server status checking
-./status-check.command
 ```
 
 ### Testing and Debugging
 ```bash
-# Test GUI server functionality
-./test-gui.sh
-
-# Check server status
-./status-check.command
-
 # Manual server start (for debugging)
 python3 server.py
 
-# View server logs
-tail -f server.log
-```
-
-### Common Development Commands
-```bash
 # Make all scripts executable
 chmod +x *.command
 
@@ -98,6 +78,9 @@ pkill -f "python3 server.py"
 
 # Check port 8080 usage
 lsof -i :8080
+
+# Test menu bar application
+python3 menu_bar_app_native.py
 
 # Test individual API endpoints
 curl -s http://localhost:8080/status
@@ -119,14 +102,10 @@ curl -s http://localhost:8080/scan-devices -X POST -H "Content-Type: application
 
 ### Supporting Tools
 - **`install.command`** - Dependency installer for Homebrew, scrcpy, nmap
-- **`auto_accept.command`** - AppleScript automation for ADB authorization dialogs
 - **`create_shortcut.command`** - Desktop shortcut creator for easy access
-- **`status-check.command`** - Server health monitoring with API endpoint testing
-- **`test-gui.sh`** - Comprehensive GUI server functionality testing script
-
-### Log Files
-- **`server.log`** - Main server log file for debugging and monitoring
-- **`server_*.log`** - Additional log files for specific debugging scenarios
+- **`menu-bar-launcher.command`** - macOS menu bar application launcher
+- **`menu_bar_app_native.py`** - Native macOS menu bar app using PyObjC
+- **`menu_bar_app.py`** - Alternative menu bar app using rumps library
 
 ## Technical Implementation Details
 
@@ -157,18 +136,6 @@ The scanner uses a sophisticated multi-layered approach:
 - **Settings Persistence**: LocalStorage for user preferences
 - **Error Handling**: Comprehensive error reporting and recovery
 
-## Security Considerations
-
-### Script Security
-- **Execution Permissions**: All `.command` files require execute permissions
-- **Network Scoping**: Limited to local network segments only
-- **No Credential Storage**: Only IP addresses are persisted, no authentication data
-
-### ADB Security
-- **Authorization Handling**: AppleScript automation for accepting ADB connections
-- **Connection Validation**: Verifies successful ADB connections before proceeding
-- **Automatic Disconnect**: Cleans up connections when operations complete
-
 ## Dependencies and Environment
 
 ### Required Tools
@@ -183,7 +150,6 @@ The scanner uses a sophisticated multi-layered approach:
 
 ### Shell Environment
 - **zsh** - Default shell for macOS scripts
-- **AppleScript** - For UI automation features
 - **Standard Unix Tools**: curl, ping, ifconfig, etc.
 
 ## Common Development Tasks
@@ -206,12 +172,6 @@ Update `gui.html` and corresponding API endpoints in `server.py`:
 - Modify settings interface
 - Enhance progress visualization
 
-### Network Optimization
-Improve scanning algorithms in both interfaces:
-- Add new network detection methods
-- Optimize parallel processing
-- Enhance error handling
-
 ## File Permissions
 All `.command` files must be executable:
 ```bash
@@ -225,14 +185,32 @@ chmod +x *.command
 - ADB wireless debugging enabled on Android devices
 - Python 3.6+ for GUI functionality
 - zsh shell (default on modern macOS)
+- Optional: rumps library for menu bar app (`pip install --user --break-system-packages rumps`)
 
 ## Build and Development Process
 The project uses a script-based approach without traditional compilation:
 1. Scripts are written in zsh for maximum macOS compatibility
 2. GUI server uses Python with standard library modules (no external dependencies)
 3. Web interface uses vanilla HTML/CSS/JavaScript (no build process)
-4. Dependencies are managed through Homebrew
-5. All scripts require execute permissions (`chmod +x`)
+4. Menu bar apps use Python with PyObjC (native) or rumps (third-party)
+5. Dependencies are managed through Homebrew
+6. All scripts require execute permissions (`chmod +x`)
+
+## Project Structure
+```
+mac-script/
+├── scan.command              # Main CLI scanning tool
+├── server.py                 # HTTP server for GUI
+├── gui.html                  # Web interface
+├── gui-launcher.command      # GUI server launcher
+├── menu-bar-launcher.command # Menu bar app launcher
+├── menu_bar_app_native.py    # Native macOS menu bar app
+├── menu_bar_app.py           # Alternative menu bar app
+├── install.command           # Dependency installer
+├── create_shortcut.command   # Desktop shortcut creator
+├── ip.txt                    # Connection history
+└── requirements.txt          # Project specifications
+```
 
 ## Important Notes for Development
 
