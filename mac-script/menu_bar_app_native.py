@@ -30,6 +30,7 @@ class ADBMenuBarController(NSObject):
         self.scanning = False
         self.scan_thread = None
         self.device_control_items = []
+        self.target_device_name = "110"  # 默认目标设备名
         
         # 获取脚本所在目录
         self.script_dir = Path(__file__).parent
@@ -68,12 +69,16 @@ class ADBMenuBarController(NSObject):
         menu.addItem_(NSMenuItem.separatorItem())
         
         # 设备列表（动态创建）
-        self.device_menu_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("设备列表 (0)", "", "")
+        self.device_menu_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("设备列表 (0)", None, "")
+        self.device_menu_item.setEnabled_(True)  # 确保菜单项可用
         menu.addItem_(self.device_menu_item)
         
         # 设备列表子菜单
         self.device_menu = NSMenu.alloc().init()
         self.device_menu_item.setSubmenu_(self.device_menu)
+        
+        # 其他设备子菜单
+        self.other_devices_menu = NSMenu.alloc().init()
         
         # 分隔线
         menu.addItem_(NSMenuItem.separatorItem())
@@ -174,13 +179,15 @@ class ADBMenuBarController(NSObject):
                     device_id = parts[0]
                     status = parts[1]
                     
-                    # 获取设备详细信息
-                    device_info = self.get_device_info(device_id)
-                    self.devices.append({
-                        'id': device_id,
-                        'status': status,
-                        'info': device_info
-                    })
+                    # 只处理在线设备，跳过offline设备
+                    if status.lower() == 'device':
+                        # 获取设备详细信息
+                        device_info = self.get_device_info(device_id)
+                        self.devices.append({
+                            'id': device_id,
+                            'status': status,
+                            'info': device_info
+                        })
         
         self.update_device_menu()
         
@@ -191,131 +198,223 @@ class ADBMenuBarController(NSObject):
         """获取设备详细信息"""
         info = {'model': 'Unknown', 'manufacturer': 'Unknown'}
         
-        # 获取设备型号
-        success, model_output, _ = self.run_adb_command(['-s', device_id, 'shell', 'getprop', 'ro.product.model'])
-        if success and model_output.strip():
-            info['model'] = model_output.strip()
-        
-        # 获取设备制造商
-        success, manufacturer_output, _ = self.run_adb_command(['-s', device_id, 'shell', 'getprop', 'ro.product.manufacturer'])
-        if success and manufacturer_output.strip():
-            info['manufacturer'] = manufacturer_output.strip()
+        try:
+            # 获取设备型号
+            success, model_output, error = self.run_adb_command(['-s', device_id, 'shell', 'getprop', 'ro.product.model'])
+            if success and model_output.strip():
+                info['model'] = model_output.strip()
+            else:
+                print(f"无法获取设备型号 {device_id}: {error}")
+            
+            # 获取设备制造商
+            success, manufacturer_output, error = self.run_adb_command(['-s', device_id, 'shell', 'getprop', 'ro.product.manufacturer'])
+            if success and manufacturer_output.strip():
+                info['manufacturer'] = manufacturer_output.strip()
+            else:
+                print(f"无法获取设备制造商 {device_id}: {error}")
+                
+        except Exception as e:
+            print(f"获取设备信息时发生异常 {device_id}: {str(e)}")
         
         return info
     
     def update_device_menu(self):
-        """更新设备菜单 - 智能菜单层级"""
+        """更新设备菜单 - 智能菜单结构"""
         # 清理之前添加的菜单项
         self.cleanup_device_control_items()
         
         # 清空设备菜单
         self.device_menu.removeAllItems()
+        self.other_devices_menu.removeAllItems()
         
         if not self.devices:
-            # 无设备时显示在主菜单
-            self.device_menu_item.setTitle_("无设备连接")
-            self.device_menu_item.setSubmenu_(None)
-            self.device_menu_item.setAction_(None)
+            # 无设备时隐藏设备列表菜单项
+            self.device_menu_item.setHidden_(True)
             return
         
-        # 根据设备数量决定菜单结构
-        if len(self.devices) == 1:
-            # 只有一个设备时，直接在主菜单显示控制命令
-            device = self.devices[0]
-            device_name = f"{device['info']['model']} ({device['id']})"
-            self.device_menu_item.setTitle_(device_name)
-            self.device_menu_item.setSubmenu_(None)
-            self.device_menu_item.setAction_(None)
+        # 分离目标设备和其他设备
+        target_devices = []
+        other_devices = []
+        
+        print(f"开始分类设备，目标字符串: '{self.target_device_name}'")
+        for device in self.devices:
+            device_name = device['info']['model']
+            device_id = device['id']
             
-            # 直接在设备菜单项后添加控制命令
-            parent_menu = self.device_menu_item.menu()
-            device_index = parent_menu.indexOfItem_(self.device_menu_item)
+            # 检查设备型号或设备ID是否包含目标字符串
+            is_target = False
+            if self.target_device_name:
+                target_lower = self.target_device_name.lower()
+                if (target_lower in device_name.lower() or 
+                    target_lower in device_id.lower()):
+                    is_target = True
+                    
+            print(f"设备: {device_name} ({device_id}) - 是否目标设备: {is_target}")
+            if is_target:
+                target_devices.append(device)
+            else:
+                other_devices.append(device)
+        
+        print(f"分类结果 - 目标设备: {len(target_devices)}, 其他设备: {len(other_devices)}")
+        
+        # 获取主菜单
+        main_menu = self.status_item.menu()
+        device_menu_index = main_menu.indexOfItem_(self.device_menu_item)
+        
+        # 根据是否有目标设备决定菜单结构
+        if target_devices:
+            # 场景A：有目标设备时
             
-            # Scrcpy
-            scrcpy_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("📱 Scrcpy", "launchScrcpy:", "")
-            scrcpy_item.setTarget_(self)
-            scrcpy_item.setRepresentedObject_(device['id'])
-            parent_menu.insertItem_atIndex_(scrcpy_item, device_index + 1)
-            self.device_control_items.append(scrcpy_item)
-            
-            # SC
-            sc_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🟢 SC", "launchSC:", "")
-            sc_item.setTarget_(self)
-            sc_item.setRepresentedObject_(device['id'])
-            parent_menu.insertItem_atIndex_(sc_item, device_index + 2)
-            self.device_control_items.append(sc_item)
-            
-            # SCA
-            sca_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🟡 SCA", "launchSCA:", "")
-            sca_item.setTarget_(self)
-            sca_item.setRepresentedObject_(device['id'])
-            parent_menu.insertItem_atIndex_(sca_item, device_index + 3)
-            self.device_control_items.append(sca_item)
-            
-            # SCB
-            scb_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🔴 SCB", "launchSCB:", "")
-            scb_item.setTarget_(self)
-            scb_item.setRepresentedObject_(device['id'])
-            parent_menu.insertItem_atIndex_(scb_item, device_index + 4)
-            self.device_control_items.append(scb_item)
-            
-            # 断开连接
-            disconnect_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🔌 断开连接", "disconnectDevice:", "")
-            disconnect_item.setTarget_(self)
-            disconnect_item.setRepresentedObject_(device['id'])
-            parent_menu.insertItem_atIndex_(disconnect_item, device_index + 5)
-            self.device_control_items.append(disconnect_item)
-            
-            # 添加分隔线
-            separator = NSMenuItem.separatorItem()
-            parent_menu.insertItem_atIndex_(separator, device_index + 6)
-            self.device_control_items.append(separator)
-            
-        else:
-            # 多个设备时使用三级菜单结构
-            self.device_menu_item.setTitle_(f"设备列表 ({len(self.devices)})")
-            self.device_menu_item.setSubmenu_(self.device_menu)
-            self.device_menu_item.setAction_(None)
-            
-            for device in self.devices:
-                device_name = f"{device['info']['model']} ({device['id']})"
-                device_menu_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(device_name, "", "")
+            # 在主菜单中显示目标设备及其命令
+            for device in target_devices:
+                device_name = f"🎯 {device['info']['model']} ({device['id']})"
+                device_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(device_name, "", "")
+                device_item.setEnabled_(False)  # 设备名称作为标题，不可点击，显示为灰色
+                main_menu.insertItem_atIndex_(device_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(device_item)
                 
-                # 创建设备操作子菜单
-                device_submenu = NSMenu.alloc().init()
-                
-                # Scrcpy
-                scrcpy_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("📱 Scrcpy", "launchScrcpy:", "")
+                # Scrcpy - 缩进显示
+                scrcpy_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    📱 Scrcpy", "launchScrcpy:", "")
                 scrcpy_item.setTarget_(self)
                 scrcpy_item.setRepresentedObject_(device['id'])
-                device_submenu.addItem_(scrcpy_item)
+                main_menu.insertItem_atIndex_(scrcpy_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(scrcpy_item)
                 
-                # SC
-                sc_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🟢 SC", "launchSC:", "")
+                # SC - 缩进显示
+                sc_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🟢 SC", "launchSC:", "")
                 sc_item.setTarget_(self)
                 sc_item.setRepresentedObject_(device['id'])
-                device_submenu.addItem_(sc_item)
+                main_menu.insertItem_atIndex_(sc_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(sc_item)
                 
-                # SCA
-                sca_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🟡 SCA", "launchSCA:", "")
+                # SCA - 缩进显示
+                sca_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🟡 SCA", "launchSCA:", "")
                 sca_item.setTarget_(self)
                 sca_item.setRepresentedObject_(device['id'])
-                device_submenu.addItem_(sca_item)
+                main_menu.insertItem_atIndex_(sca_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(sca_item)
                 
-                # SCB
-                scb_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🔴 SCB", "launchSCB:", "")
+                # SCB - 缩进显示
+                scb_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🔴 SCB", "launchSCB:", "")
                 scb_item.setTarget_(self)
                 scb_item.setRepresentedObject_(device['id'])
-                device_submenu.addItem_(scb_item)
+                main_menu.insertItem_atIndex_(scb_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(scb_item)
                 
-                # 断开连接
-                disconnect_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🔌 断开连接", "disconnectDevice:", "")
+                # 断开连接 - 缩进显示
+                disconnect_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🔌 断开连接", "disconnectDevice:", "")
                 disconnect_item.setTarget_(self)
                 disconnect_item.setRepresentedObject_(device['id'])
-                device_submenu.addItem_(disconnect_item)
+                main_menu.insertItem_atIndex_(disconnect_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(disconnect_item)
+            
+            # 其他设备放在子菜单
+            if other_devices:
+                print(f"设置其他设备菜单: {len(other_devices)} 个设备")
+                self.device_menu_item.setTitle_(f"其他设备 ({len(other_devices)})")
+                self.device_menu_item.setSubmenu_(self.device_menu)
+                self.device_menu_item.setAction_(None)
+                self.device_menu_item.setEnabled_(True)  # 确保主菜单项可用
+                self.device_menu_item.setHidden_(False)
+                print(f"其他设备菜单项状态 - isEnabled: {self.device_menu_item.isEnabled()}, isHidden: {self.device_menu_item.isHidden()}")
                 
-                device_menu_item.setSubmenu_(device_submenu)
-                self.device_menu.addItem_(device_menu_item)
+                # 在设备列表子菜单中显示其他设备
+                for device in other_devices:
+                    device_name = f"{device['info']['model']} ({device['id']})"
+                    print(f"创建其他设备菜单项: {device_name}")
+                    device_menu_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(device_name, None, "")
+                    device_menu_item.setEnabled_(True)  # 确保菜单项可用
+                    
+                    # 创建设备操作子菜单
+                    device_submenu = NSMenu.alloc().init()
+                    
+                    # Scrcpy
+                    scrcpy_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("📱 Scrcpy", "launchScrcpy:", "")
+                    scrcpy_item.setTarget_(self)
+                    scrcpy_item.setRepresentedObject_(device['id'])
+                    device_submenu.addItem_(scrcpy_item)
+                    
+                    # SC
+                    sc_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🟢 SC", "launchSC:", "")
+                    sc_item.setTarget_(self)
+                    sc_item.setRepresentedObject_(device['id'])
+                    device_submenu.addItem_(sc_item)
+                    
+                    # SCA
+                    sca_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🟡 SCA", "launchSCA:", "")
+                    sca_item.setTarget_(self)
+                    sca_item.setRepresentedObject_(device['id'])
+                    device_submenu.addItem_(sca_item)
+                    
+                    # SCB
+                    scb_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🔴 SCB", "launchSCB:", "")
+                    scb_item.setTarget_(self)
+                    scb_item.setRepresentedObject_(device['id'])
+                    device_submenu.addItem_(scb_item)
+                    
+                    # 断开连接
+                    disconnect_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("🔌 断开连接", "disconnectDevice:", "")
+                    disconnect_item.setTarget_(self)
+                    disconnect_item.setRepresentedObject_(device['id'])
+                    device_submenu.addItem_(disconnect_item)
+                    
+                    device_menu_item.setSubmenu_(device_submenu)
+                    self.device_menu.addItem_(device_menu_item)
+                    print(f"子菜单项已添加: {device_name}, 子菜单项数量: {device_submenu.numberOfItems()}")
+                
+                print(f"其他设备子菜单总项数: {self.device_menu.numberOfItems()}")
+            else:
+                # 没有其他设备，隐藏设备列表菜单
+                self.device_menu_item.setHidden_(True)
+                
+        else:
+            # 场景B：无目标设备时
+            
+            # 隐藏"其他设备"菜单项
+            self.device_menu_item.setHidden_(True)
+            
+            # 其他设备直接在主菜单显示
+            for device in other_devices:
+                device_name = f"📱 {device['info']['model']} ({device['id']})"
+                device_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(device_name, "", "")
+                device_item.setEnabled_(False)  # 设备名称作为标题，不可点击，显示为灰色
+                main_menu.insertItem_atIndex_(device_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(device_item)
+                
+                # Scrcpy - 缩进显示
+                scrcpy_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    📱 Scrcpy", "launchScrcpy:", "")
+                scrcpy_item.setTarget_(self)
+                scrcpy_item.setRepresentedObject_(device['id'])
+                main_menu.insertItem_atIndex_(scrcpy_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(scrcpy_item)
+                
+                # SC - 缩进显示
+                sc_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🟢 SC", "launchSC:", "")
+                sc_item.setTarget_(self)
+                sc_item.setRepresentedObject_(device['id'])
+                main_menu.insertItem_atIndex_(sc_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(sc_item)
+                
+                # SCA - 缩进显示
+                sca_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🟡 SCA", "launchSCA:", "")
+                sca_item.setTarget_(self)
+                sca_item.setRepresentedObject_(device['id'])
+                main_menu.insertItem_atIndex_(sca_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(sca_item)
+                
+                # SCB - 缩进显示
+                scb_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🔴 SCB", "launchSCB:", "")
+                scb_item.setTarget_(self)
+                scb_item.setRepresentedObject_(device['id'])
+                main_menu.insertItem_atIndex_(scb_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(scb_item)
+                
+                # 断开连接 - 缩进显示
+                disconnect_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_("    🔌 断开连接", "disconnectDevice:", "")
+                disconnect_item.setTarget_(self)
+                disconnect_item.setRepresentedObject_(device['id'])
+                main_menu.insertItem_atIndex_(disconnect_item, device_menu_index + len(self.device_control_items))
+                self.device_control_items.append(disconnect_item)
     
     def cleanup_device_control_items(self):
         """清理设备控制菜单项"""
@@ -330,6 +429,14 @@ class ADBMenuBarController(NSObject):
                 parent_menu.removeItem_(item)
         
         self.device_control_items = []
+        
+        # 重置设备列表菜单项的可见性和状态
+        if hasattr(self, 'device_menu_item'):
+            print("清理菜单项，重置状态")
+            self.device_menu_item.setHidden_(False)
+            self.device_menu_item.setEnabled_(True)
+            self.device_menu_item.setSubmenu_(None)  # 清除之前的子菜单
+            print(f"重置后菜单项状态 - isEnabled: {self.device_menu_item.isEnabled()}")
     
     def launchScrcpy_(self, sender):
         """启动Scrcpy"""
@@ -355,6 +462,12 @@ class ADBMenuBarController(NSObject):
         """断开设备连接"""
         device_id = sender.representedObject()
         self.disconnect_device(device_id)
+    
+    def selectDevice_(self, sender):
+        """选择设备（用于其他设备列表）"""
+        device_id = sender.representedObject()
+        # 可以在这里添加设备选择后的操作，比如显示设备信息
+        self.show_notification(f"设备选择", f"已选择设备: {device_id}")
     
     def scan_devices(self):
         """扫描设备"""
@@ -441,7 +554,7 @@ class ADBMenuBarController(NSObject):
         
         # 创建文本输入框
         input_field = NSTextField.alloc().initWithFrame_(NSMakeRect(0, 0, 200, 24))
-        input_field.setStringValue_("110")
+        input_field.setStringValue_(self.target_device_name)
         
         alert.setAccessoryView_(input_field)
         
@@ -449,7 +562,13 @@ class ADBMenuBarController(NSObject):
         
         if response == NSAlertFirstButtonReturn:
             target_device = input_field.stringValue()
-            self.show_notification("设置已保存", f"目标设备型号: {target_device}")
+            if target_device.strip():
+                self.target_device_name = target_device.strip()
+                self.show_notification("设置已保存", f"目标设备型号: {self.target_device_name}")
+                # 刷新设备菜单显示
+                self.update_device_menu()
+            else:
+                self.show_notification("设置错误", "目标设备名称不能为空")
     
     def show_history(self):
         """显示历史记录"""

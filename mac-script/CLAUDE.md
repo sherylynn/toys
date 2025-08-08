@@ -4,58 +4,62 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a comprehensive macOS-based ADB (Android Debug Bridge) wireless debugging and device management system. The project provides both command-line and GUI-based tools for automatically scanning, connecting, and managing Android devices over WiFi, with a focus on finding specific devices and launching screen mirroring applications.
+This is a comprehensive macOS-based ADB (Android Debug Bridge) wireless debugging and device management system. The project provides three interfaces: command-line (`scan.command`), web-based GUI (`server.py` + `gui.html`), and a native macOS menu bar application (`menu_bar_app_native.py`). The system specializes in automatically scanning, connecting, and managing Android devices over WiFi, with intelligent device targeting and multi-instance screen mirroring capabilities.
 
 ## Core Architecture
 
-### Dual-Interface Design
-The project implements a dual-interface architecture:
-- **Command-line interface** (`scan.command`) - Fast, efficient scanning for power users
-- **GUI interface** (`server.py` + `gui.html`) - Web-based interface for easier device management
-
-Both interfaces share the same core functionality but provide different user experiences.
+### Triple-Interface Design
+- **Command-line interface** (`scan.command`) - Fast, efficient scanning with parallel processing
+- **GUI interface** (`server.py` + `gui.html`) - Web-based interface with real-time updates
+- **Menu bar interface** (`menu_bar_app_native.py`) - Native macOS menu bar with smart device categorization
 
 ### Key Components
 
 #### 1. Main Scanning Engine (`scan.command`)
-- **Network Discovery**: Automatically detects local network segments (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
-- **Multi-layer Scanning**: Implements three scanning methods for reliability:
-  1. Historical IP priority checking
-  2. Fast parallel ping scanning with progress visualization
-  3. Direct port scanning for ADB (port 5555)
-- **Device Targeting**: Specifically looks for devices with "110" in their model name
-- **Auto-launch**: Automatically launches multiple scrcpy instances (`sc`, `sca`, `scb`) for target devices
+- **Multi-layer Network Discovery**: 
+  - Historical IP priority checking from `ip.txt`
+  - Parallel ping scanning with background processes and progress bars
+  - Direct TCP port scanning for ADB (port 5555)
+  - Common IP fallback mechanism
+- **Intelligent Device Targeting**: Pattern matching for device model names (default "110")
+- **Auto-launch System**: Automatically starts multiple scrcpy instances (`sc`, `sca`, `scb`)
+- **Performance Optimizations**: Background processes, timeout management, subnet awareness
 
 #### 2. GUI Server (`server.py`)
-- **HTTP API**: RESTful API for device management operations
-- **Real-time Status**: WebSocket-like polling for scan progress updates
-- **Multi-threaded Architecture**: Handles concurrent requests efficiently
-- **Device Management**: Connection, disconnection, and application launching
-- **History Management**: Persistent storage of successful connections
+- **RESTful API**: HTTP endpoints for all device operations
+- **Multi-threaded Architecture**: `ThreadPoolExecutor` for concurrent operations
+- **Real-time Status Updates**: Polling-based progress tracking
+- **ADBScanner Class**: Encapsulates all ADB operations with error handling
+- **Persistent History**: Maintains connection history in `ip.txt`
 
 #### 3. Web Interface (`gui.html`)
-- **Modern UI**: Clean, responsive design with real-time updates
-- **Device Management**: Visual device list with connection controls
-- **Settings Management**: Configurable scan parameters and application preferences
-- **History Tracking**: Quick access to previously connected devices
-- **Progress Visualization**: Real-time scanning progress with progress bars
+- **Single-page Application**: Vanilla JavaScript with responsive design
+- **Real-time Updates**: Periodic polling for scan progress and device status
+- **Settings Management**: LocalStorage-based configuration persistence
+- **Interactive Controls**: Device connection, disconnection, and application launching
 
-#### 4. Dependency Management (`install.command`)
-- **Homebrew Setup**: Automatic installation of package manager
-- **Tool Installation**: scrcpy (screen mirroring), nmap (network scanning)
-- **Environment Verification**: Checks for existing installations
+#### 4. Menu Bar Application (`menu_bar_app_native.py`)
+- **Smart Menu Structure**: Dynamic menu hierarchy based on device targeting
+- **Device Categorization**: Separates target devices from others with different UI treatments
+- **PyObjC Implementation**: Native macOS integration using AppKit framework
+- **Intelligent Actions**: Context-aware device commands and quick access
+
+#### 5. Dependency Management (`install.command`)
+- **Automated Setup**: Homebrew installation and verification
+- **Tool Chain**: scrcpy, nmap, ADB tools installation
+- **Environment Validation**: Checks for existing dependencies
 
 ## Development Workflow
 
 ### Primary Scripts
 ```bash
-# Command-line scanning
+# Command-line scanning (main tool)
 ./scan.command
 
 # GUI-based management
 ./gui-launcher.command
 
-# Menu bar application
+# Menu bar application (native macOS)
 ./menu-bar-launcher.command
 
 # Install dependencies
@@ -70,6 +74,9 @@ Both interfaces share the same core functionality but provide different user exp
 # Manual server start (for debugging)
 python3 server.py
 
+# Test menu bar application (direct execution)
+python3 menu_bar_app_native.py
+
 # Make all scripts executable
 chmod +x *.command
 
@@ -79,98 +86,122 @@ pkill -f "python3 server.py"
 # Check port 8080 usage
 lsof -i :8080
 
-# Test menu bar application
-python3 menu_bar_app_native.py
-
 # Test individual API endpoints
 curl -s http://localhost:8080/status
 curl -s http://localhost:8080/devices
 curl -s http://localhost:8080/scan-devices -X POST -H "Content-Type: application/json" -d '{"timeout": 3}'
+
+# Test device connection
+adb devices
+adb connect <device_ip>:5555
+```
+
+### Menu Bar Application Development
+```bash
+# Test menu bar with different device scenarios
+# 1. No devices connected
+# 2. Only target devices (model name contains "110")
+# 3. Only non-target devices
+# 4. Mixed devices
+
+# Debug menu bar state
+# Check system logs for menu bar app output
+log stream --predicate 'process == "python3"' --info
 ```
 
 ## Key Files and Their Roles
 
 ### Core Scripts
-- **`scan.command`** - Main ADB device scanning tool with parallel processing and multi-layered network discovery
+- **`scan.command`** - Main ADB device scanning tool with multi-layered network discovery and parallel processing
 - **`server.py`** - HTTP server providing REST API for device management with multi-threaded architecture
-- **`gui.html`** - Web-based user interface with real-time updates and responsive design
+- **`gui.html`** - Single-page web application with real-time updates and responsive design
 - **`gui-launcher.command`** - Server startup script with dependency checking and automatic browser opening
+- **`menu_bar_app_native.py`** - Native macOS menu bar application with intelligent device categorization
 
 ### Configuration and Data
 - **`ip.txt`** - Persistent history of successfully connected device IPs for fast reconnection
-- **`requirements.txt`** - Project specifications and technical requirements (Chinese)
+- **`requirements.txt`** - Original project specifications (Chinese, describes Go implementation that was replaced)
+- **`MENU_BAR_LOGIC.md`** - Detailed documentation of menu bar application logic and behavior
 
 ### Supporting Tools
-- **`install.command`** - Dependency installer for Homebrew, scrcpy, nmap
+- **`install.command`** - Automated dependency installer for Homebrew, scrcpy, nmap
 - **`create_shortcut.command`** - Desktop shortcut creator for easy access
-- **`menu-bar-launcher.command`** - macOS menu bar application launcher
-- **`menu_bar_app_native.py`** - Native macOS menu bar app using PyObjC
-- **`menu_bar_app.py`** - Alternative menu bar app using rumps library
+- **`menu-bar-launcher.command`** - Menu bar application launcher with error handling
 
 ## Technical Implementation Details
 
 ### Network Scanning Strategy
-The scanner uses a sophisticated multi-layered approach:
+The scanner implements a sophisticated multi-layered approach:
 
-1. **Historical IP Priority**: Checks previously connected devices first, prioritizing same-subnet devices
-2. **Fast Ping Scan**: Parallel ping sweep using background processes with real-time progress bars
-3. **Port Scanning**: Efficient TCP connect scanning for ADB port 5555
-4. **Common IP Fallback**: Scans known device IPs if other methods fail
+1. **Historical IP Priority**: Reads `ip.txt` and attempts connections to previously successful devices first
+2. **Fast Ping Scan**: Parallel background processes with real-time progress visualization and percentage completion
+3. **Direct Port Scanning**: TCP connect scanning specifically for ADB port 5555
+4. **Subnet Discovery**: Automatically detects local network segments (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
 
 ### Performance Optimizations
-- **Parallel Processing**: Uses background processes for concurrent network operations
-- **Progress Visualization**: Real-time progress bars with percentage completion
-- **Timeout Management**: Configurable timeouts for network operations
-- **Subnet Awareness**: Prioritizes devices from the same network segment
+- **Background Processing**: Uses zsh background jobs (`&`) for concurrent network operations
+- **Progress Visualization**: Real-time progress bars with completion percentages and ETA
+- **Timeout Management**: Configurable timeouts for all network operations with graceful degradation
+- **Connection Prioritization**: Same-subnet devices get priority over cross-subnet connections
 
-### Device Targeting Logic
-- **Pattern Matching**: Searches for devices with "110" in model name
-- **Multi-instance Launching**: Starts multiple scrcpy instances (`sc`, `sca`, `scb`)
-- **Automatic Connection**: Establishes ADB connection before launching applications
-- **History Integration**: Maintains persistent connection history for faster reconnection
+### Device Targeting and Launch System
+- **Pattern Matching**: Searches device model names for target string (default "110")
+- **Multi-instance Launching**: Automatically starts `sc`, `sca`, `scb` instances for target devices
+- **Script Integration**: Loads `toolsinit.sh` for custom script aliases and functions
+- **IP Processing**: Handles both raw IPs and IP:port formats automatically
 
-### GUI Architecture
-- **RESTful API**: Clean HTTP endpoints for all operations
-- **Real-time Updates**: Polling-based status updates for scan progress
-- **Responsive Design**: Mobile-friendly web interface
-- **Settings Persistence**: LocalStorage for user preferences
-- **Error Handling**: Comprehensive error reporting and recovery
+### Menu Bar Application Architecture
+- **Smart Menu Hierarchy**: Dynamic structure based on device targeting (see `MENU_BAR_LOGIC.md`)
+- **Device Categorization**: Separates target devices (🎯) from others (📱) with different UI treatments
+- **PyObjC Integration**: Native macOS AppKit framework for system integration
+- **Dynamic Menu Management**: Runtime menu construction and cleanup with proper memory management
+
+### GUI Server Architecture
+- **Multi-threaded Design**: `ThreadPoolExecutor` with `MAX_WORKERS=50` for concurrent operations
+- **State Management**: Global `scan_status` dictionary for real-time progress tracking
+- **RESTful Endpoints**: Clean HTTP API with JSON request/response handling
+- **ADB Integration**: `ADBScanner` class encapsulates all ADB operations with error handling
 
 ## Dependencies and Environment
 
 ### Required Tools
 - **adb** - Android Debug Bridge (part of Android SDK Platform Tools)
 - **scrcpy** - Android screen mirroring tool
-- **python3** - For GUI server functionality
+- **python3** - For GUI server and menu bar functionality
 - **Homebrew** - macOS package manager
 
 ### Optional Tools
 - **nmap** - Advanced network scanning capabilities
-- **Custom Scripts**: `sc`, `sca`, `scb` aliases for scrcpy instances
+- **Custom Scripts**: `sc`, `sca`, `scb` aliases defined in `toolsinit.sh`
 
 ### Shell Environment
-- **zsh** - Default shell for macOS scripts
-- **Standard Unix Tools**: curl, ping, ifconfig, etc.
+- **zsh** - Default shell for all macOS scripts
+- **Standard Unix Tools**: curl, ping, ifconfig, tcpconnect
+- **PyObjC** - For native macOS menu bar application
 
 ## Common Development Tasks
 
-### Adding New Device Patterns
-Modify device matching logic in both `scan.command` and `server.py`:
-```bash
-# In scan.command (line ~244)
-if [[ "$device_name" == *"NEW_PATTERN"* ]]; then
-```
+### Modifying Device Targeting
+Update device pattern matching in multiple locations:
+- **CLI Interface**: `scan.command` (line ~244) - modify device name matching logic
+- **GUI Server**: `server.py` (ADBScanner class) - update pattern matching
+- **Menu Bar**: `menu_bar_app_native.py` - update `self.target_device_name` logic
 
-### Modifying Scan Parameters
-Adjust timeout values, parallel processes, or IP ranges in:
-- `scan.command` - Command-line interface
-- `server.py` - GUI interface (ADBScanner class)
+### Menu Bar Application Development
+1. **Logic Changes**: Update `MENU_BAR_LOGIC.md` first, then implement in `menu_bar_app_native.py`
+2. **Menu Structure**: Modify `update_device_menu()` method for hierarchy changes
+3. **Device Actions**: Add new actions by creating new methods and menu items
+4. **Settings Integration**: Update `show_settings()` for new configuration options
 
-### Enhancing GUI Features
-Update `gui.html` and corresponding API endpoints in `server.py`:
-- Add new device actions
-- Modify settings interface
-- Enhance progress visualization
+### Network Scanning Enhancements
+- **Timeout Configuration**: Modify timeout values in `scan.command` and `server.py`
+- **Parallel Processing**: Adjust background process counts in `scan.command`
+- **IP Range Management**: Update subnet discovery logic in both scanning engines
+
+### GUI Feature Development
+1. **API Endpoints**: Add new endpoints in `server.py`
+2. **Frontend Updates**: Modify `gui.html` JavaScript and HTML
+3. **Settings Persistence**: Update LocalStorage handling in web interface
 
 ## File Permissions
 All `.command` files must be executable:
@@ -185,50 +216,63 @@ chmod +x *.command
 - ADB wireless debugging enabled on Android devices
 - Python 3.6+ for GUI functionality
 - zsh shell (default on modern macOS)
-- Optional: rumps library for menu bar app (`pip install --user --break-system-packages rumps`)
+- PyObjC framework (usually included with Python)
 
 ## Build and Development Process
 The project uses a script-based approach without traditional compilation:
-1. Scripts are written in zsh for maximum macOS compatibility
-2. GUI server uses Python with standard library modules (no external dependencies)
-3. Web interface uses vanilla HTML/CSS/JavaScript (no build process)
-4. Menu bar apps use Python with PyObjC (native) or rumps (third-party)
-5. Dependencies are managed through Homebrew
-6. All scripts require execute permissions (`chmod +x`)
+1. **CLI Scripts**: zsh shell scripts for maximum macOS compatibility
+2. **GUI Server**: Python with standard library (no external dependencies)
+3. **Web Interface**: Vanilla HTML/CSS/JavaScript (no build process)
+4. **Menu Bar**: Python with PyObjC for native macOS integration
+5. **Dependencies**: Managed through Homebrew automation
+6. **Execution**: All `.command` files require execute permissions
 
 ## Project Structure
 ```
 mac-script/
-├── scan.command              # Main CLI scanning tool
-├── server.py                 # HTTP server for GUI
-├── gui.html                  # Web interface
-├── gui-launcher.command      # GUI server launcher
-├── menu-bar-launcher.command # Menu bar app launcher
-├── menu_bar_app_native.py    # Native macOS menu bar app
-├── menu_bar_app.py           # Alternative menu bar app
-├── install.command           # Dependency installer
-├── create_shortcut.command   # Desktop shortcut creator
-├── ip.txt                    # Connection history
-└── requirements.txt          # Project specifications
+├── scan.command              # Main CLI scanning tool (zsh)
+├── server.py                 # HTTP server for GUI (Python)
+├── gui.html                  # Web interface (HTML/JS/CSS)
+├── gui-launcher.command      # GUI server launcher (zsh)
+├── menu-bar-launcher.command # Menu bar app launcher (zsh)
+├── menu_bar_app_native.py    # Native macOS menu bar app (Python/PyObjC)
+├── menu_bar_app.py           # Alternative menu bar app (Python/rumps)
+├── install.command           # Dependency installer (zsh)
+├── create_shortcut.command   # Desktop shortcut creator (zsh)
+├── ip.txt                    # Connection history (data)
+├── requirements.txt          # Original project specs (Chinese)
+└── MENU_BAR_LOGIC.md         # Menu bar application documentation
 ```
 
 ## Important Notes for Development
 
 ### Server Port Management
-- The GUI server runs on port 8080 by default
-- Use `pkill -f "python3 server.py"` to stop existing server instances
-- Check port usage with `lsof -i :8080`
+- **Default Port**: GUI server runs on port 8080
+- **Process Management**: Use `pkill -f "python3 server.py"` to stop server instances
+- **Port Conflicts**: Check usage with `lsof -i :8080`
 
-### Script Execution
-- All `.command` files must be executable: `chmod +x *.command`
-- Scripts are designed to be run from the project directory
-- The `gui-launcher.command` handles server startup and automatic browser opening
+### Script Execution Environment
+- **File Permissions**: All `.command` files must be executable
+- **Working Directory**: Scripts assume execution from project directory
+- **Shell Environment**: zsh with access to user environment and aliases
+- **Tool Integration**: Scripts load `toolsinit.sh` for custom functions
+
+### Menu Bar Application Specifics
+- **Smart Menu Logic**: Refer to `MENU_BAR_LOGIC.md` for detailed behavior specification
+- **Device Categorization**: Target devices (🎯) vs others (📱) with different UI treatments
+- **Dynamic Structure**: Menu hierarchy adapts based on connected device types
+- **State Management**: Proper cleanup of dynamic menu items to prevent memory leaks
+
+### Multi-Interface Consistency
+When modifying device discovery or targeting logic, ensure consistency across:
+1. **CLI Interface** (`scan.command`)
+2. **GUI Server** (`server.py`)
+3. **Menu Bar App** (`menu_bar_app_native.py`)
+4. **Documentation** (`MENU_BAR_LOGIC.md`)
 
 ### Device Discovery Architecture
 The system implements a sophisticated multi-layered scanning approach:
-1. **Historical IP Priority**: Checks `ip.txt` for previously connected devices first
-2. **Fast Network Scan**: Parallel ping scanning of local subnet (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
-3. **Port Scanning**: TCP connect scanning for ADB port 5555
-4. **Common IP Fallback**: Scans known device IP ranges if other methods fail
-
-This architecture ensures easy deployment and maintenance while providing powerful device management capabilities.
+1. **Historical Priority**: `ip.txt` provides fast reconnection to previously successful devices
+2. **Parallel Scanning**: Background processes for concurrent network operations
+3. **Subnet Discovery**: Automatic detection of local network segments
+4. **Target Filtering**: Pattern-based device identification and prioritization
