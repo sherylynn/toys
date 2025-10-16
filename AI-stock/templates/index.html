@@ -291,6 +291,285 @@
 
         .positive { color: #4CAF50; }
         .negative { color: #f44336; }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-container {
+            position: relative;
+            background: white;
+            margin: 20px auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 90%;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            background: #f9fafb;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* 表单分区样式 */
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        /* 表单布局 */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .modal-container {
+                width: 95%;
+                margin: 10px auto;
+                max-height: calc(100vh - 20px);
+            }
+
+            .modal-header,
+            .modal-footer {
+                padding: 16px 20px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .modal-header h3 {
+                font-size: 1.125rem;
+            }
+
+            .form-section h4 {
+                font-size: 0.875rem;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.813rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-container {
+                width: 98%;
+                margin: 5px auto;
+                border-radius: 8px;
+            }
+
+            .modal-header,
+            .modal-content,
+            .modal-footer {
+                padding: 16px;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer .btn {
+                width: 100%;
+                margin: 4px 0;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 8px 10px;
+                font-size: 0.813rem;
+            }
+        }
+
+        /* 特殊设备适配 */
+        @media (max-height: 600px) {
+            .modal-container {
+                max-height: calc(100vh - 10px);
+                margin: 5px auto;
+            }
+
+            .modal-header,
+            .modal-footer {
+                padding: 12px 16px;
+            }
+
+            .modal-content {
+                padding: 16px;
+            }
+
+            .form-section {
+                margin-bottom: 20px;
+            }
+
+            .form-section h4 {
+                margin-bottom: 12px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            .form-group textarea {
+                min-height: 60px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -397,35 +676,170 @@
     </div>
 
     <!-- 添加持仓模态框 -->
-    <div id="addPositionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 8px; min-width: 400px;">
-            <h3>添加持仓</h3>
-            <div class="form-group">
-                <label for="modalStockCode">股票代码</label>
-                <input type="text" id="modalStockCode" placeholder="如：000538">
+    <div id="addPositionModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>添加持仓</h3>
+                <button class="modal-close" onclick="hideAddPositionModal()">&times;</button>
             </div>
-            <div class="form-group">
-                <label for="modalStockName">股票名称</label>
-                <input type="text" id="modalStockName" placeholder="如：云南白药">
+            
+            <div class="modal-content">
+                <div class="form-section">
+                    <h4>基本信息</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalStockCode">股票代码</label>
+                            <input type="text" id="modalStockCode" placeholder="如：000538">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalStockName">股票名称</label>
+                            <input type="text" id="modalStockName" placeholder="如：云南白药">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalShares">持仓数量</label>
+                            <input type="number" id="modalShares" placeholder="如：100">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalBuyPrice">买入价格</label>
+                            <input type="number" id="modalBuyPrice" step="0.01" placeholder="如：55.50">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modalNotes">备注</label>
+                        <input type="text" id="modalNotes" placeholder="可选">
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h4>买入理由（可选）</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="buyCompanyQuality">公司质地</label>
+                            <textarea id="buyCompanyQuality" rows="3" placeholder="如：行业龙头、管理层优秀、财务稳健等"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="buyCompanyValuation">公司估值</label>
+                            <textarea id="buyCompanyValuation" rows="3" placeholder="如：市盈率合理、市净率低于行业平均等"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="buyIndustry">行业分析</label>
+                            <textarea id="buyIndustry" rows="3" placeholder="如：行业前景良好、政策支持、市场需求增长等"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="buyGrowthProspects">成长前景</label>
+                            <textarea id="buyGrowthProspects" rows="3" placeholder="如：营收增长稳定、新业务拓展、市场份额提升等"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="buyTechnicalAnalysis">技术分析</label>
+                            <textarea id="buyTechnicalAnalysis" rows="3" placeholder="如：趋势向上、支撑位强劲、技术指标良好等"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="buyRiskAssessment">风险评估</label>
+                            <textarea id="buyRiskAssessment" rows="3" placeholder="如：市场风险、政策风险、竞争风险等"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="buyOtherReasons">其他理由</label>
+                            <textarea id="buyOtherReasons" rows="3" placeholder="其他买入原因"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="modalShares">持仓数量</label>
-                <input type="number" id="modalShares" placeholder="如：100">
-            </div>
-            <div class="form-group">
-                <label for="modalBuyPrice">买入价格</label>
-                <input type="number" id="modalBuyPrice" step="0.01" placeholder="如：55.50">
-            </div>
-            <div class="form-group">
-                <label for="modalNotes">备注</label>
-                <input type="text" id="modalNotes" placeholder="可选">
-            </div>
-            <div style="text-align: right;">
-                <button class="btn" onclick="hideAddPositionModal()" style="margin-right: 10px;">取消</button>
-                <button class="btn" onclick="addPosition()">确定</button>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideAddPositionModal()">取消</button>
+                <button class="btn btn-primary" onclick="addPosition()">确定添加</button>
             </div>
         </div>
     </div>
+    </div>
+
+    <!-- 编辑持仓理由模态框 -->
+    <div id="editReasonModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>编辑持仓理由</h3>
+                <button class="modal-close" onclick="hideEditReasonModal()">&times;</button>
+            </div>
+            
+            <div class="modal-content">
+                <div class="form-section">
+                    <h4>买入理由</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="editBuyCompanyQuality">公司质地</label>
+                            <textarea id="editBuyCompanyQuality" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBuyCompanyValuation">公司估值</label>
+                            <textarea id="editBuyCompanyValuation" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBuyIndustry">行业分析</label>
+                            <textarea id="editBuyIndustry" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBuyGrowthProspects">成长前景</label>
+                            <textarea id="editBuyGrowthProspects" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBuyTechnicalAnalysis">技术分析</label>
+                            <textarea id="editBuyTechnicalAnalysis" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBuyRiskAssessment">风险评估</label>
+                            <textarea id="editBuyRiskAssessment" rows="3"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="editBuyOtherReasons">其他理由</label>
+                            <textarea id="editBuyOtherReasons" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h4>持仓理由</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="editHoldCompanyQuality">公司质地</label>
+                            <textarea id="editHoldCompanyQuality" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHoldCompanyValuation">公司估值</label>
+                            <textarea id="editHoldCompanyValuation" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHoldIndustry">行业分析</label>
+                            <textarea id="editHoldIndustry" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHoldGrowthProspects">成长前景</label>
+                            <textarea id="editHoldGrowthProspects" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHoldTechnicalAnalysis">技术分析</label>
+                            <textarea id="editHoldTechnicalAnalysis" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHoldRiskAssessment">风险评估</label>
+                            <textarea id="editHoldRiskAssessment" rows="3"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="editHoldOtherReasons">其他理由</label>
+                            <textarea id="editHoldOtherReasons" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideEditReasonModal()">取消</button>
+                <button class="btn btn-primary" onclick="savePositionReasons()">保存理由</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -753,6 +1167,138 @@
             return 'recommendation-sell';
         }
 
+        function getScoreColor(score) {
+            if (score >= 80) return '#4CAF50';  // 绿色 - 优秀
+            if (score >= 60) return '#2196F3';  // 蓝色 - 良好
+            if (score >= 40) return '#FF9800';  // 橙色 - 一般
+            return '#f44336';                  // 红色 - 较差
+        }
+
+        // 持仓理由相关函数
+        let currentEditingPositionId = null;
+
+        function showEditReasonModal(positionId, position) {
+            currentEditingPositionId = positionId;
+            
+            // 填充买入理由
+            if (position.buy_reason) {
+                document.getElementById('editBuyCompanyQuality').value = position.buy_reason.company_quality || '';
+                document.getElementById('editBuyCompanyValuation').value = position.buy_reason.company_valuation || '';
+                document.getElementById('editBuyIndustry').value = position.buy_reason.industry || '';
+                document.getElementById('editBuyGrowthProspects').value = position.buy_reason.growth_prospects || '';
+                document.getElementById('editBuyTechnicalAnalysis').value = position.buy_reason.technical_analysis || '';
+                document.getElementById('editBuyRiskAssessment').value = position.buy_reason.risk_assessment || '';
+                document.getElementById('editBuyOtherReasons').value = position.buy_reason.other_reasons || '';
+            } else {
+                // 清空买入理由字段
+                document.getElementById('editBuyCompanyQuality').value = '';
+                document.getElementById('editBuyCompanyValuation').value = '';
+                document.getElementById('editBuyIndustry').value = '';
+                document.getElementById('editBuyGrowthProspects').value = '';
+                document.getElementById('editBuyTechnicalAnalysis').value = '';
+                document.getElementById('editBuyRiskAssessment').value = '';
+                document.getElementById('editBuyOtherReasons').value = '';
+            }
+            
+            // 填充持仓理由
+            if (position.hold_reason) {
+                document.getElementById('editHoldCompanyQuality').value = position.hold_reason.company_quality || '';
+                document.getElementById('editHoldCompanyValuation').value = position.hold_reason.company_valuation || '';
+                document.getElementById('editHoldIndustry').value = position.hold_reason.industry || '';
+                document.getElementById('editHoldGrowthProspects').value = position.hold_reason.growth_prospects || '';
+                document.getElementById('editHoldTechnicalAnalysis').value = position.hold_reason.technical_analysis || '';
+                document.getElementById('editHoldRiskAssessment').value = position.hold_reason.risk_assessment || '';
+                document.getElementById('editHoldOtherReasons').value = position.hold_reason.other_reasons || '';
+            } else {
+                // 清空持仓理由字段
+                document.getElementById('editHoldCompanyQuality').value = '';
+                document.getElementById('editHoldCompanyValuation').value = '';
+                document.getElementById('editHoldIndustry').value = '';
+                document.getElementById('editHoldGrowthProspects').value = '';
+                document.getElementById('editHoldTechnicalAnalysis').value = '';
+                document.getElementById('editHoldRiskAssessment').value = '';
+                document.getElementById('editHoldOtherReasons').value = '';
+            }
+            
+            document.getElementById('editReasonModal').style.display = 'block';
+        }
+
+        function hideEditReasonModal() {
+            document.getElementById('editReasonModal').style.display = 'none';
+            currentEditingPositionId = null;
+        }
+
+        async function savePositionReasons() {
+            if (!currentEditingPositionId) {
+                alert('无效的持仓ID');
+                return;
+            }
+
+            // 构建买入理由
+            const buyReason = {
+                company_quality: document.getElementById('editBuyCompanyQuality').value,
+                company_valuation: document.getElementById('editBuyCompanyValuation').value,
+                industry: document.getElementById('editBuyIndustry').value,
+                growth_prospects: document.getElementById('editBuyGrowthProspects').value,
+                technical_analysis: document.getElementById('editBuyTechnicalAnalysis').value,
+                risk_assessment: document.getElementById('editBuyRiskAssessment').value,
+                other_reasons: document.getElementById('editBuyOtherReasons').value
+            };
+
+            // 构建持仓理由
+            const holdReason = {
+                company_quality: document.getElementById('editHoldCompanyQuality').value,
+                company_valuation: document.getElementById('editHoldCompanyValuation').value,
+                industry: document.getElementById('editHoldIndustry').value,
+                growth_prospects: document.getElementById('editHoldGrowthProspects').value,
+                technical_analysis: document.getElementById('editHoldTechnicalAnalysis').value,
+                risk_assessment: document.getElementById('editHoldRiskAssessment').value,
+                other_reasons: document.getElementById('editHoldOtherReasons').value
+            };
+
+            // 检查是否有任何内容
+            const buyHasContent = Object.values(buyReason).some(value => value.trim() !== '');
+            const holdHasContent = Object.values(holdReason).some(value => value.trim() !== '');
+
+            if (!buyHasContent && !holdHasContent) {
+                alert('请至少填写一项理由');
+                return;
+            }
+
+            try {
+                const requestBody = {};
+                
+                if (buyHasContent) {
+                    requestBody.buy_reason = buyReason;
+                }
+                
+                if (holdHasContent) {
+                    requestBody.hold_reason = holdReason;
+                }
+
+                const response = await fetch(`${API_BASE}/positions/${currentEditingPositionId}/reasons`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    alert('持仓理由保存成功');
+                    hideEditReasonModal();
+                    loadPositions(); // 重新加载持仓列表
+                } else {
+                    alert('保存失败：' + (result.error || '未知错误'));
+                }
+            } catch (error) {
+                console.error('保存持仓理由失败:', error);
+                alert('保存失败：' + error.message);
+            }
+        }
+
         // 持仓管理相关函数
         function showAddPositionModal() {
             document.getElementById('addPositionModal').style.display = 'block';
@@ -766,6 +1312,15 @@
             document.getElementById('modalShares').value = '';
             document.getElementById('modalBuyPrice').value = '';
             document.getElementById('modalNotes').value = '';
+            
+            // 清空理由字段
+            document.getElementById('buyCompanyQuality').value = '';
+            document.getElementById('buyCompanyValuation').value = '';
+            document.getElementById('buyIndustry').value = '';
+            document.getElementById('buyGrowthProspects').value = '';
+            document.getElementById('buyTechnicalAnalysis').value = '';
+            document.getElementById('buyRiskAssessment').value = '';
+            document.getElementById('buyOtherReasons').value = '';
         }
 
         async function addPosition() {
@@ -780,19 +1335,40 @@
                 return;
             }
 
+            // 构建买入理由
+            const buyReason = {
+                company_quality: document.getElementById('buyCompanyQuality').value,
+                company_valuation: document.getElementById('buyCompanyValuation').value,
+                industry: document.getElementById('buyIndustry').value,
+                growth_prospects: document.getElementById('buyGrowthProspects').value,
+                technical_analysis: document.getElementById('buyTechnicalAnalysis').value,
+                risk_assessment: document.getElementById('buyRiskAssessment').value,
+                other_reasons: document.getElementById('buyOtherReasons').value
+            };
+
+            // 检查是否有任何理由字段被填写
+            const hasReason = Object.values(buyReason).some(value => value.trim() !== '');
+
             try {
+                const requestBody = {
+                    stock_code: stockCode,
+                    stock_name: stockName,
+                    shares: shares,
+                    buy_price: buyPrice,
+                    notes: notes
+                };
+
+                // 只有在有理由内容时才添加理由字段
+                if (hasReason) {
+                    requestBody.buy_reason = buyReason;
+                }
+
                 const response = await fetch(`${API_BASE}/positions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        stock_code: stockCode,
-                        stock_name: stockName,
-                        shares: shares,
-                        buy_price: buyPrice,
-                        notes: notes
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
                 const result = await response.json();
@@ -834,40 +1410,60 @@
             }
 
             container.innerHTML = `
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: #f8f9fa;">
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">股票代码</th>
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">股票名称</th>
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">持仓数量</th>
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">买入价格</th>
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">当前价格</th>
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">盈亏金额</th>
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">盈亏比例</th>
-                            <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${positions.map(position => `
-                            <tr>
-                                <td style="padding: 12px; border: 1px solid #ddd;">${position.stock_code}</td>
-                                <td style="padding: 12px; border: 1px solid #ddd;">${position.stock_name}</td>
-                                <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">${position.shares.toLocaleString()}</td>
-                                <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">¥${position.buy_price.toFixed(2)}</td>
-                                <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">¥${position.current_price.toFixed(2)}</td>
-                                <td style="padding: 12px; border: 1px solid #ddd; text-align: right; color: ${position.profit_loss >= 0 ? '#4CAF50' : '#f44336'};">
-                                    ¥${position.profit_loss.toFixed(2)}
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #ddd; text-align: right; color: ${position.profit_rate >= 0 ? '#4CAF50' : '#f44336'};">
-                                    ${position.profit_rate.toFixed(2)}%
-                                </td>
-                                <td style="padding: 12px; border: 1px solid #ddd;">
-                                    <button onclick="deletePosition(${position.id})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">删除</button>
-                                </td>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 1200px;">
+                        <thead>
+                            <tr style="background: #f8f9fa;">
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">股票代码</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">股票名称</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">持仓数量</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">买入价格</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">当前价格</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">当日涨跌</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">持仓收益</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">收益率</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">市盈率</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">市净率</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">ROE</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">股息率</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">评分</th>
+                                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">操作</th>
                             </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            ${positions.map(position => `
+                                <tr>
+                                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">${position.stock_code}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">${position.stock_name}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${position.shares.toLocaleString()}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">¥${position.buy_price.toFixed(2)}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right; font-weight: bold;">¥${position.current_price.toFixed(2)}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: ${position.current_change_pct >= 0 ? '#4CAF50' : '#f44336'};">
+                                        ${position.current_change_pct >= 0 ? '+' : ''}${position.current_change_pct.toFixed(2)}%
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: ${position.profit_loss >= 0 ? '#4CAF50' : '#f44336'}; font-weight: bold;">
+                                        ¥${position.profit_loss.toFixed(2)}
+                                        ${position.day_profit_loss ? `<br><span style="font-size: 12px; color: ${position.day_profit_loss >= 0 ? '#4CAF50' : '#f44336'};">当日: ${position.day_profit_loss >= 0 ? '+' : ''}¥${position.day_profit_loss.toFixed(2)}</span>` : ''}
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: ${position.profit_rate >= 0 ? '#4CAF50' : '#f44336'};">
+                                        ${position.profit_rate >= 0 ? '+' : ''}${position.profit_rate.toFixed(2)}%
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${position.current_pe_ratio ? position.current_pe_ratio.toFixed(2) : 'N/A'}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${position.current_pb_ratio ? position.current_pb_ratio.toFixed(2) : 'N/A'}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${position.current_roe ? position.current_roe.toFixed(2) + '%' : 'N/A'}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">${position.current_dividend_yield ? position.current_dividend_yield.toFixed(2) + '%' : 'N/A'}</td>
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+                                        ${position.position_score ? `<span style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; background: ${getScoreColor(position.position_score)};">${position.position_score}分</span>` : 'N/A'}
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">
+                                        <button onclick="showEditReasonModal(${position.id}, ${JSON.stringify(position).replace(/"/g, '&quot;')})" style="background: #2196F3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">编辑理由</button>
+                                        <button onclick="deletePosition(${position.id})" style="background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">删除</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
             `;
         }
 
@@ -883,6 +1479,16 @@
             const totalValue = positions.reduce((sum, p) => sum + p.current_value, 0);
             const totalProfitLoss = totalValue - totalCost;
             const totalProfitRate = totalCost > 0 ? (totalProfitLoss / totalCost) * 100 : 0;
+            
+            // 计算当日总盈亏
+            const totalDayProfitLoss = positions.reduce((sum, p) => sum + (p.day_profit_loss || 0), 0);
+            
+            // 计算平均指标
+            const validPositions = positions.filter(p => p.position_score);
+            const avgScore = validPositions.length > 0 ? validPositions.reduce((sum, p) => sum + p.position_score, 0) / validPositions.length : 0;
+            const avgROE = positions.filter(p => p.current_roe).reduce((sum, p) => sum + p.current_roe, 0) / positions.filter(p => p.current_roe).length || 0;
+            const avgPE = positions.filter(p => p.current_pe_ratio).reduce((sum, p) => sum + p.current_pe_ratio, 0) / positions.filter(p => p.current_pe_ratio).length || 0;
+            const avgDividendYield = positions.filter(p => p.current_dividend_yield).reduce((sum, p) => sum + p.current_dividend_yield, 0) / positions.filter(p => p.current_dividend_yield).length || 0;
 
             container.innerHTML = `
                 <div class="card">
@@ -904,6 +1510,7 @@
                             <div class="info-label">总盈亏</div>
                             <div class="info-value ${totalProfitLoss >= 0 ? 'positive' : 'negative'}">
                                 ¥${totalProfitLoss.toFixed(2)}
+                                ${totalDayProfitLoss ? `<br><span style="font-size: 12px;">当日: ${totalDayProfitLoss >= 0 ? '+' : ''}¥${totalDayProfitLoss.toFixed(2)}</span>` : ''}
                             </div>
                         </div>
                         <div class="info-item">
@@ -911,6 +1518,30 @@
                             <div class="info-value ${totalProfitRate >= 0 ? 'positive' : 'negative'}">
                                 ${totalProfitRate.toFixed(2)}%
                             </div>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px; margin-bottom: 15px;">平均指标</h4>
+                    <div class="basic-info">
+                        <div class="info-item">
+                            <div class="info-label">平均评分</div>
+                            <div class="info-value">${avgScore > 0 ? avgScore.toFixed(1) + '分' : 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">平均ROE</div>
+                            <div class="info-value">${avgROE > 0 ? avgROE.toFixed(2) + '%' : 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">平均市盈率</div>
+                            <div class="info-value">${avgPE > 0 ? avgPE.toFixed(2) : 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">平均股息率</div>
+                            <div class="info-value">${avgDividendYield > 0 ? avgDividendYield.toFixed(2) + '%' : 'N/A'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">更新时间</div>
+                            <div class="info-value">${new Date().toLocaleString()}</div>
                         </div>
                     </div>
                 </div>
