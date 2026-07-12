@@ -20,7 +20,7 @@ const QueryCanvas: React.FC<QueryCanvasProps> = ({ onDropTable, droppedTables })
   return (
     <Card
       title="Query Canvas"
-      ref={drop}
+      ref={drop as unknown as React.Ref<HTMLDivElement>}
       style={{
         minHeight: '200px',
         border: '1px dashed #ccc',

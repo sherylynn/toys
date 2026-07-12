@@ -44,6 +44,15 @@ const QueryPage: React.FC = () => {
   };
 
   const handleBuildQuery = async () => {
+    const queryRequest: QueryRequest = {
+      database_id: 'demo_db',
+      tables: selectedTables,
+      columns: [], // You might need to update this based on your UI
+      conditions: conditions,
+      order_by: orderBy.map(o => ({ ...o, direction: o.direction || 'ASC' })),
+      limit: limit,
+    };
+
     setLoading(true);
     try {
       const response = await apiClient.post('/api/query/build', queryRequest);
@@ -58,6 +67,16 @@ const QueryPage: React.FC = () => {
   };
 
   const handleExportQuery = async () => {
+    const queryRequest: QueryRequest = {
+      database_id: 'demo_db',
+      tables: selectedTables,
+      columns: [], // You might need to update this based on your UI
+      conditions: conditions,
+      order_by: orderBy.map(o => ({ ...o, direction: o.direction || 'ASC' })),
+      limit: limit,
+    };
+    const token = localStorage.getItem('token');
+
     setExportLoading(true);
     try {
       const response = await apiClient.post('/api/query/export', queryRequest, {

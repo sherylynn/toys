@@ -21,7 +21,7 @@ const DraggableTable: React.FC<DraggableTableProps> = ({ name }) => {
 
   return (
     <div
-      ref={drag}
+      ref={drag as unknown as React.Ref<HTMLDivElement>}
       style={{
         opacity: isDragging ? 0.5 : 1,
         padding: '8px',

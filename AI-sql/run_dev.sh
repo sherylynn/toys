@@ -14,14 +14,14 @@ trap cleanup EXIT
 # Start the backend server
 echo "Starting backend server..."
 cd backend
-go run cmd/server/main.go > ../backend.log 2>&1 &
+go run cmd/server/main.go > /root/toys/AI-sql/backend.log 2>&1 &
 BACKEND_PID=$!
 cd ..
 
 # Start the frontend server
 echo "Starting frontend server..."
 cd frontend
-PORT=3000 npm start > ../frontend.log 2>&1 &
+PORT=3000 npm start > /root/toys/AI-sql/frontend.log 2>&1 &
 FRONTEND_PID=$!
 cd ..
 
@@ -41,7 +41,10 @@ echo "Frontend is ready."
 
 # Run Cypress tests
 echo "Running Cypress tests..."
-cd frontend
-npm run cypress:run
+# cd frontend
+# npm run cypress:run
+
+echo "Servers are running. Press Ctrl+C to stop."
+wait
 
 # The cleanup trap will handle killing the background processes

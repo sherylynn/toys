@@ -47,10 +47,10 @@ const ConditionBuilder: React.FC<Props> = ({ initialConditions = [], onChange })
                     <Select placeholder="Operator" style={{ width: 120 }}>
                       <Option value="=">Equals (=)</Option>
                       <Option value="!=">Not Equals (!=)</Option>
-                      <Option value=">">Greater Than (>)</Option>
-                      <Option value="<">Less Than (<)</Option>
-                      <Option value=">=">Greater Than or Equals (>=)</Option>
-                      <Option value="<=">Less Than or Equals (<=)</Option>
+                      <Option value=">">Greater Than (&gt;)</Option>
+                      <Option value="<">Less Than (&lt;)</Option>
+                      <Option value=">=">Greater Than or Equals (&gt;=)</Option>
+                      <Option value="<=">Less Than or Equals (&lt;=)</Option>
                       <Option value="LIKE">Like (LIKE)</Option>
                       {/* Add more operators as needed */}
                     </Select>

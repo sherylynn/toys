@@ -17,21 +17,26 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
+	"_ "github.com/mattn/go-sqlite3"
 )
 
 //go:embed templates/*
 var templatesFS embed.FS
 
+// Config struct for server configuration
+type Config struct {
+	Port int `json:"port"`
+}
+
 // StockBasicInfo 股票基本信息
 type StockBasicInfo struct {
-	Code     string  `json:"code"`
-	Name     string  `json:"name"`
-	Price    float64 `json:"price"`
-	Change   float64 `json:"change"`
+	Code      string  `json:"code"`
+	Name      string  `json:"name"`
+	Price     float64 `json:"price"`
+	Change    float64 `json:"change"`
 	ChangePct float64 `json:"change_pct"`
-	Volume   int64   `json:"volume"`
-	Amount   float64 `json:"amount"`
+	Volume    int64   `json:"volume"`
+	Amount    float64 `json:"amount"`
 }
 
 // FinancialMetrics 财务指标
@@ -55,9 +60,9 @@ type FinancialMetrics struct {
 type ValueInvestmentData struct {
 	StockBasicInfo
 	FinancialMetrics
-	ValueScore      int     `json:"value_score"`
-	Recommendation  string  `json:"recommendation"`
-	AnalysisTime    string  `json:"analysis_time"`
+	ValueScore      int             `json:"value_score"`
+	Recommendation  string          `json:"recommendation"`
+	AnalysisTime    string          `json:"analysis_time"`
 	IndustryAverage *FinancialMetrics `json:"industry_average,omitempty"`
 }
 
@@ -77,52 +82,52 @@ type Position struct {
 	Notes        string  `json:"notes"`
 	CreatedAt    string  `json:"created_at"`
 	UpdatedAt    string  `json:"updated_at"`
-	
+
 	// 扩展指标
-	CurrentPERatio    float64 `json:"current_pe_ratio"`
-	CurrentPBRatio    float64 `json:"current_pb_ratio"`
-	CurrentROE        float64 `json:"current_roe"`
+	CurrentPERatio       float64 `json:"current_pe_ratio"`
+	CurrentPBRatio       float64 `json:"current_pb_ratio"`
+	CurrentROE           float64 `json:"current_roe"`
 	CurrentDividendYield float64 `json:"current_dividend_yield"`
-	CurrentEPS        float64 `json:"current_eps"`
-	CurrentChangePct  float64 `json:"current_change_pct"`
-	MarketValue       float64 `json:"market_value"`
-	DayProfitLoss     float64 `json:"day_profit_loss"`
-	PositionScore     int     `json:"position_score"`
-	
+	CurrentEPS           float64 `json:"current_eps"`
+	CurrentChangePct     float64 `json:"current_change_pct"`
+	MarketValue          float64 `json:"market_value"`
+	DayProfitLoss        float64 `json:"day_profit_loss"`
+	PositionScore        int     `json:"position_score"`
+
 	// 持仓理由
-	BuyReason      *PositionReason `json:"buy_reason,omitempty"`
-	HoldReason     *PositionReason `json:"hold_reason,omitempty"`
+	BuyReason  *PositionReason `json:"buy_reason,omitempty"`
+	HoldReason *PositionReason `json:"hold_reason,omitempty"`
 }
 
 // PositionReason 持仓理由
 type PositionReason struct {
-	CompanyQuality   string `json:"company_quality"`   // 公司质地
-	CompanyValuation string `json:"company_valuation"` // 公司估值
-	Industry         string `json:"industry"`         // 行业分析
-	GrowthProspects  string `json:"growth_prospects"`  // 成长前景
+	CompanyQuality    string `json:"company_quality"`   // 公司质地
+	CompanyValuation  string `json:"company_valuation"` // 公司估值
+	Industry          string `json:"industry"`          // 行业分析
+	GrowthProspects   string `json:"growth_prospects"`  // 成长前景
 	TechnicalAnalysis string `json:"technical_analysis"` // 技术分析
-	RiskAssessment   string `json:"risk_assessment"`   // 风险评估
-	OtherReasons     string `json:"other_reasons"`     // 其他理由
+	RiskAssessment    string `json:"risk_assessment"`   // 风险评估
+	OtherReasons      string `json:"other_reasons"`     // 其他理由
 }
 
 // AddPositionRequest 添加持仓请求
 type AddPositionRequest struct {
-	StockCode    string           `json:"stock_code"`
-	StockName    string           `json:"stock_name"`
-	Shares       int              `json:"shares"`
-	BuyPrice     float64          `json:"buy_price"`
-	Notes        string           `json:"notes"`
-	BuyReason    *PositionReason  `json:"buy_reason,omitempty"`
-	HoldReason   *PositionReason  `json:"hold_reason,omitempty"`
+	StockCode    string          `json:"stock_code"`
+	StockName    string          `json:"stock_name"`
+	Shares       int             `json:"shares"`
+	BuyPrice     float64         `json:"buy_price"`
+	Notes        string          `json:"notes"`
+	BuyReason    *PositionReason `json:"buy_reason,omitempty"`
+	HoldReason   *PositionReason `json:"hold_reason,omitempty"`
 }
 
 // UpdatePositionRequest 更新持仓请求
 type UpdatePositionRequest struct {
-	Shares     int              `json:"shares"`
-	BuyPrice   float64          `json:"buy_price"`
-	Notes      string           `json:"notes"`
-	BuyReason  *PositionReason  `json:"buy_reason,omitempty"`
-	HoldReason *PositionReason  `json:"hold_reason,omitempty"`
+	Shares     int             `json:"shares"`
+	BuyPrice   float64         `json:"buy_price"`
+	Notes      string          `json:"notes"`
+	BuyReason  *PositionReason `json:"buy_reason,omitempty"`
+	HoldReason *PositionReason `json:"hold_reason,omitempty"`
 }
 
 // ValueInvestmentAPI 价值投资数据获取API
@@ -177,7 +182,8 @@ func (api *ValueInvestmentAPI) initDB() error {
 		hold_technical_analysis TEXT,
 		hold_risk_assessment TEXT,
 		hold_other_reasons TEXT
-	);`
+	);
+`
 
 	_, err = api.DB.Exec(createTableSQL)
 	if err != nil {
@@ -236,7 +242,7 @@ func (api *ValueInvestmentAPI) migrateDatabase() error {
 		"buy_other_reasons":        "TEXT",
 		"hold_company_quality":     "TEXT",
 		"hold_company_valuation":   "TEXT",
-		"hold_industry":           "TEXT",
+		"hold_industry":            "TEXT",
 		"hold_growth_prospects":    "TEXT",
 		"hold_technical_analysis":  "TEXT",
 		"hold_risk_assessment":     "TEXT",
@@ -273,7 +279,7 @@ func (api *ValueInvestmentAPI) AddPosition(req AddPositionRequest) (*Position, e
 	// 处理理由字段
 	var buyQuality, buyValuation, buyIndustry, buyGrowth, buyTechnical, buyRisk, buyOther string
 	var holdQuality, holdValuation, holdIndustry, holdGrowth, holdTechnical, holdRisk, holdOther string
-	
+
 	if req.BuyReason != nil {
 		buyQuality = req.BuyReason.CompanyQuality
 		buyValuation = req.BuyReason.CompanyValuation
@@ -283,7 +289,7 @@ func (api *ValueInvestmentAPI) AddPosition(req AddPositionRequest) (*Position, e
 		buyRisk = req.BuyReason.RiskAssessment
 		buyOther = req.BuyReason.OtherReasons
 	}
-	
+
 	if req.HoldReason != nil {
 		holdQuality = req.HoldReason.CompanyQuality
 		holdValuation = req.HoldReason.CompanyValuation
@@ -300,7 +306,7 @@ func (api *ValueInvestmentAPI) AddPosition(req AddPositionRequest) (*Position, e
 			buy_company_quality, buy_company_valuation, buy_industry, buy_growth_prospects, buy_technical_analysis, buy_risk_assessment, buy_other_reasons,
 			hold_company_quality, hold_company_valuation, hold_industry, hold_growth_prospects, hold_technical_analysis, hold_risk_assessment, hold_other_reasons
 		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-	`, 
+	`,
 		req.StockCode, req.StockName, req.Shares, req.BuyPrice, req.Notes, buyDate, createdAt, updatedAt,
 		buyQuality, buyValuation, buyIndustry, buyGrowth, buyTechnical, buyRisk, buyOther,
 		holdQuality, holdValuation, holdIndustry, holdGrowth, holdTechnical, holdRisk, holdOther)
@@ -315,12 +321,12 @@ func (api *ValueInvestmentAPI) AddPosition(req AddPositionRequest) (*Position, e
 	currentPrice := req.BuyPrice // 默认使用买入价格
 	var stockInfo *StockBasicInfo
 	var metrics *FinancialMetrics
-	
+
 	if info, err := api.GetStockBasicInfo(req.StockCode); err == nil {
 		currentPrice = info.Price
 		stockInfo = info
 	}
-	
+
 	// 获取财务指标
 	if m, err := api.GetFinancialMetrics(req.StockCode); err == nil {
 		metrics = m
@@ -344,7 +350,7 @@ func (api *ValueInvestmentAPI) AddPosition(req AddPositionRequest) (*Position, e
 		BuyReason:    req.BuyReason,
 		HoldReason:   req.HoldReason,
 	}
-	
+
 	// 设置扩展指标
 	if metrics != nil {
 		position.CurrentPERatio = metrics.PERatio
@@ -354,7 +360,7 @@ func (api *ValueInvestmentAPI) AddPosition(req AddPositionRequest) (*Position, e
 		position.CurrentEPS = metrics.EPS
 		position.PositionScore = api.calculateValueScore(metrics)
 	}
-	
+
 	if stockInfo != nil {
 		position.CurrentChangePct = stockInfo.ChangePct
 		position.MarketValue = float64(req.Shares) * currentPrice
@@ -388,37 +394,37 @@ func (api *ValueInvestmentAPI) GetPositions() ([]*Position, error) {
 		var p Position
 		var buyQuality, buyValuation, buyIndustry, buyGrowth, buyTechnical, buyRisk, buyOther sql.NullString
 		var holdQuality, holdValuation, holdIndustry, holdGrowth, holdTechnical, holdRisk, holdOther sql.NullString
-		
+
 		err := rows.Scan(&p.ID, &p.StockCode, &p.StockName, &p.Shares, &p.BuyPrice, &p.Notes, &p.BuyDate, &p.CreatedAt, &p.UpdatedAt,
 			&buyQuality, &buyValuation, &buyIndustry, &buyGrowth, &buyTechnical, &buyRisk, &buyOther,
 			&holdQuality, &holdValuation, &holdIndustry, &holdGrowth, &holdTechnical, &holdRisk, &holdOther)
 		if err != nil {
 			continue
 		}
-		
+
 		// 构建买入理由
 		if buyQuality.Valid || buyValuation.Valid || buyIndustry.Valid || buyGrowth.Valid || buyTechnical.Valid || buyRisk.Valid || buyOther.Valid {
 			p.BuyReason = &PositionReason{
-				CompanyQuality:   buyQuality.String,
-				CompanyValuation: buyValuation.String,
-				Industry:         buyIndustry.String,
-				GrowthProspects:  buyGrowth.String,
+				CompanyQuality:    buyQuality.String,
+				CompanyValuation:  buyValuation.String,
+				Industry:          buyIndustry.String,
+				GrowthProspects:   buyGrowth.String,
 				TechnicalAnalysis: buyTechnical.String,
-				RiskAssessment:   buyRisk.String,
-				OtherReasons:     buyOther.String,
+				RiskAssessment:    buyRisk.String,
+				OtherReasons:      buyOther.String,
 			}
 		}
-		
+
 		// 构建持仓理由
 		if holdQuality.Valid || holdValuation.Valid || holdIndustry.Valid || holdGrowth.Valid || holdTechnical.Valid || holdRisk.Valid || holdOther.Valid {
 			p.HoldReason = &PositionReason{
-				CompanyQuality:   holdQuality.String,
-				CompanyValuation: holdValuation.String,
-				Industry:         holdIndustry.String,
-				GrowthProspects:  holdGrowth.String,
+				CompanyQuality:    holdQuality.String,
+				CompanyValuation:  holdValuation.String,
+				Industry:          holdIndustry.String,
+				GrowthProspects:   holdGrowth.String,
 				TechnicalAnalysis: holdTechnical.String,
-				RiskAssessment:   holdRisk.String,
-				OtherReasons:     holdOther.String,
+				RiskAssessment:    holdRisk.String,
+				OtherReasons:      holdOther.String,
 			}
 		}
 
@@ -426,12 +432,12 @@ func (api *ValueInvestmentAPI) GetPositions() ([]*Position, error) {
 		currentPrice := p.BuyPrice
 		var stockInfo *StockBasicInfo
 		var metrics *FinancialMetrics
-		
+
 		if info, err := api.GetStockBasicInfo(p.StockCode); err == nil {
 			currentPrice = info.Price
 			stockInfo = info
 		}
-		
+
 		// 获取财务指标
 		if m, err := api.GetFinancialMetrics(p.StockCode); err == nil {
 			metrics = m
@@ -442,7 +448,7 @@ func (api *ValueInvestmentAPI) GetPositions() ([]*Position, error) {
 		p.CurrentValue = float64(p.Shares) * currentPrice
 		p.ProfitLoss = p.CurrentValue - p.TotalCost
 		p.ProfitRate = (p.CurrentPrice - p.BuyPrice) / p.BuyPrice * 100
-		
+
 		// 设置扩展指标
 		if metrics != nil {
 			p.CurrentPERatio = metrics.PERatio
@@ -452,7 +458,7 @@ func (api *ValueInvestmentAPI) GetPositions() ([]*Position, error) {
 			p.CurrentEPS = metrics.EPS
 			p.PositionScore = api.calculateValueScore(metrics)
 		}
-		
+
 		if stockInfo != nil {
 			p.CurrentChangePct = stockInfo.ChangePct
 			p.MarketValue = float64(p.Shares) * currentPrice
@@ -477,7 +483,7 @@ func (api *ValueInvestmentAPI) UpdatePosition(id int, req UpdatePositionRequest)
 	// 处理理由字段
 	var buyQuality, buyValuation, buyIndustry, buyGrowth, buyTechnical, buyRisk, buyOther string
 	var holdQuality, holdValuation, holdIndustry, holdGrowth, holdTechnical, holdRisk, holdOther string
-	
+
 	if req.BuyReason != nil {
 		buyQuality = req.BuyReason.CompanyQuality
 		buyValuation = req.BuyReason.CompanyValuation
@@ -487,7 +493,7 @@ func (api *ValueInvestmentAPI) UpdatePosition(id int, req UpdatePositionRequest)
 		buyRisk = req.BuyReason.RiskAssessment
 		buyOther = req.BuyReason.OtherReasons
 	}
-	
+
 	if req.HoldReason != nil {
 		holdQuality = req.HoldReason.CompanyQuality
 		holdValuation = req.HoldReason.CompanyValuation
@@ -528,7 +534,7 @@ func (api *ValueInvestmentAPI) UpdatePositionReason(id int, buyReason, holdReaso
 	// 处理理由字段
 	var buyQuality, buyValuation, buyIndustry, buyGrowth, buyTechnical, buyRisk, buyOther string
 	var holdQuality, holdValuation, holdIndustry, holdGrowth, holdTechnical, holdRisk, holdOther string
-	
+
 	if buyReason != nil {
 		buyQuality = buyReason.CompanyQuality
 		buyValuation = buyReason.CompanyValuation
@@ -538,7 +544,7 @@ func (api *ValueInvestmentAPI) UpdatePositionReason(id int, buyReason, holdReaso
 		buyRisk = buyReason.RiskAssessment
 		buyOther = buyReason.OtherReasons
 	}
-	
+
 	if holdReason != nil {
 		holdQuality = holdReason.CompanyQuality
 		holdValuation = holdReason.CompanyValuation
@@ -577,7 +583,7 @@ func (api *ValueInvestmentAPI) GetPosition(id int) (*Position, error) {
 	var p Position
 	var buyQuality, buyValuation, buyIndustry, buyGrowth, buyTechnical, buyRisk, buyOther sql.NullString
 	var holdQuality, holdValuation, holdIndustry, holdGrowth, holdTechnical, holdRisk, holdOther sql.NullString
-	
+
 	err := api.DB.QueryRow(`
 		SELECT id, stock_code, stock_name, shares, buy_price, notes, buy_date, created_at, updated_at,
 			buy_company_quality, buy_company_valuation, buy_industry, buy_growth_prospects, buy_technical_analysis, buy_risk_assessment, buy_other_reasons,
@@ -586,31 +592,31 @@ func (api *ValueInvestmentAPI) GetPosition(id int) (*Position, error) {
 	`, id).Scan(&p.ID, &p.StockCode, &p.StockName, &p.Shares, &p.BuyPrice, &p.Notes, &p.BuyDate, &p.CreatedAt, &p.UpdatedAt,
 		&buyQuality, &buyValuation, &buyIndustry, &buyGrowth, &buyTechnical, &buyRisk, &buyOther,
 		&holdQuality, &holdValuation, &holdIndustry, &holdGrowth, &holdTechnical, &holdRisk, &holdOther)
-	
+
 	if err == nil {
 		// 构建买入理由
 		if buyQuality.Valid || buyValuation.Valid || buyIndustry.Valid || buyGrowth.Valid || buyTechnical.Valid || buyRisk.Valid || buyOther.Valid {
 			p.BuyReason = &PositionReason{
-				CompanyQuality:   buyQuality.String,
-				CompanyValuation: buyValuation.String,
-				Industry:         buyIndustry.String,
-				GrowthProspects:  buyGrowth.String,
+				CompanyQuality:    buyQuality.String,
+				CompanyValuation:  buyValuation.String,
+				Industry:          buyIndustry.String,
+				GrowthProspects:   buyGrowth.String,
 				TechnicalAnalysis: buyTechnical.String,
-				RiskAssessment:   buyRisk.String,
-				OtherReasons:     buyOther.String,
+				RiskAssessment:    buyRisk.String,
+				OtherReasons:      buyOther.String,
 			}
 		}
-		
+
 		// 构建持仓理由
 		if holdQuality.Valid || holdValuation.Valid || holdIndustry.Valid || holdGrowth.Valid || holdTechnical.Valid || holdRisk.Valid || holdOther.Valid {
 			p.HoldReason = &PositionReason{
-				CompanyQuality:   holdQuality.String,
-				CompanyValuation: holdValuation.String,
-				Industry:         holdIndustry.String,
-				GrowthProspects:  holdGrowth.String,
+				CompanyQuality:    holdQuality.String,
+				CompanyValuation:  holdValuation.String,
+				Industry:          holdIndustry.String,
+				GrowthProspects:   holdGrowth.String,
 				TechnicalAnalysis: holdTechnical.String,
-				RiskAssessment:   holdRisk.String,
-				OtherReasons:     holdOther.String,
+				RiskAssessment:    holdRisk.String,
+				OtherReasons:      holdOther.String,
 			}
 		}
 	}
@@ -623,12 +629,12 @@ func (api *ValueInvestmentAPI) GetPosition(id int) (*Position, error) {
 	currentPrice := p.BuyPrice
 	var stockInfo *StockBasicInfo
 	var metrics *FinancialMetrics
-	
+
 	if info, err := api.GetStockBasicInfo(p.StockCode); err == nil {
 		currentPrice = info.Price
 		stockInfo = info
 	}
-	
+
 	// 获取财务指标
 	if m, err := api.GetFinancialMetrics(p.StockCode); err == nil {
 		metrics = m
@@ -639,7 +645,7 @@ func (api *ValueInvestmentAPI) GetPosition(id int) (*Position, error) {
 	p.CurrentValue = float64(p.Shares) * currentPrice
 	p.ProfitLoss = p.CurrentValue - p.TotalCost
 	p.ProfitRate = (p.CurrentPrice - p.BuyPrice) / p.BuyPrice * 100
-	
+
 	// 设置扩展指标
 	if metrics != nil {
 		p.CurrentPERatio = metrics.PERatio
@@ -649,7 +655,7 @@ func (api *ValueInvestmentAPI) GetPosition(id int) (*Position, error) {
 		p.CurrentEPS = metrics.EPS
 		p.PositionScore = api.calculateValueScore(metrics)
 	}
-	
+
 	if stockInfo != nil {
 		p.CurrentChangePct = stockInfo.ChangePct
 		p.MarketValue = float64(p.Shares) * currentPrice
@@ -673,7 +679,7 @@ func (api *ValueInvestmentAPI) DeletePosition(id int) error {
 // UpdatePositionsPrice 更新所有持仓的当前价格
 func (api *ValueInvestmentAPI) UpdatePositionsPrice() error {
 	if api.DB == nil {
-		return fmt.Errorf("数据库未初始化")
+		return nil, fmt.Errorf("数据库未初始化")
 	}
 
 	// 获取所有持仓
@@ -885,7 +891,7 @@ func (d *StockReportDownloader) downloadReportsForYear(companyName string, compa
 	var result struct {
 		Announcements []struct {
 			AnnouncementTitle string `json:"announcementTitle"`
-			AdjunctUrl       string `json:"adjunctUrl"`
+			AdjunctUrl        string `json:"adjunctUrl"`
 		} `json:"announcements"`
 	}
 
@@ -955,7 +961,7 @@ func (d *StockReportDownloader) downloadReportsForYear(companyName string, compa
 				downloadedFiles = append(downloadedFiles, DownloadedFile{
 					Title:    announcement.AnnouncementTitle,
 					FileName: fileName,
-					FilePath: filepath.Join("downloads", companyName, actualYear, fileName),
+					FilePath: filepath.ToSlash(filePath),
 				})
 				continue
 			}
@@ -990,7 +996,7 @@ func (d *StockReportDownloader) downloadReportsForYear(companyName string, compa
 			downloadedFiles = append(downloadedFiles, DownloadedFile{
 				Title:    announcement.AnnouncementTitle,
 				FileName: fileName,
-				FilePath: filepath.Join("downloads", companyName, actualYear, fileName),
+				FilePath: filepath.ToSlash(filePath),
 			})
 		}
 	}
@@ -1028,16 +1034,36 @@ func openBrowser(url string) error {
 	return exec.Command(cmd, args...).Start()
 }
 
+// loadConfig loads configuration from config.json
+func loadConfig() (Config, error) {
+	var config Config
+	configFile, err := os.Open("config.json")
+	if err != nil {
+		return config, err
+	}
+	defer configFile.Close()
+	jsonParser := json.NewDecoder(configFile)
+	err = jsonParser.Decode(&config)
+	return config, err
+}
+
 func main() {
+	// Load configuration
+	config, err := loadConfig()
+	if err != nil {
+		fmt.Println("Warning: Could not load config.json, using default port 8084. Error:", err)
+		config.Port = 8084 // Default port
+	}
+
 	// 创建下载目录
 	os.MkdirAll("downloads", 0755)
 
 	// 创建下载器实例
 	downloader := NewStockReportDownloader()
-	
+
 	// 创建价值投资API实例
 	valueAPI := NewValueInvestmentAPI()
-	
+
 	// 初始化数据库
 	if err := valueAPI.initDB(); err != nil {
 		fmt.Printf("数据库初始化失败: %v\n", err)
@@ -1055,14 +1081,14 @@ func main() {
 	r.GET("/api/reports", func(c *gin.Context) {
 		fmt.Println("开始获取历史财报列表...")
 		var allFiles []DownloadedFile
-	
+
 		// 检查downloads目录是否存在
 		if _, err := os.Stat("downloads"); os.IsNotExist(err) {
 			fmt.Println("警告：downloads目录不存在")
 			c.JSON(http.StatusOK, gin.H{"reports": allFiles})
 			return
 		}
-	
+
 		// 遍历downloads目录
 		err := filepath.Walk("downloads", func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -1079,13 +1105,13 @@ func main() {
 				// 从路径中提取信息
 				relPath := strings.TrimPrefix(path, "downloads/")
 				parts := strings.Split(relPath, "/")
-				
+
 				if len(parts) >= 2 {
 					company := parts[0]
 					year := parts[1]
 					fileName := parts[len(parts)-1]
 					fmt.Printf("处理文件 - 公司：%s, 年份：%s, 文件名：%s\n", company, year, fileName)
-					
+
 					allFiles = append(allFiles, DownloadedFile{
 						Title:    strings.TrimSuffix(fileName, ".pdf"),
 						FileName: fileName,
@@ -1097,19 +1123,19 @@ func main() {
 			}
 			return nil
 		})
-	
+
 		if err != nil {
 			fmt.Printf("获取报表列表失败：%v\n", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "获取报表列表失败：" + err.Error()})
 			return
 		}
-	
+
 		fmt.Printf("成功获取到 %d 个历史财报\n", len(allFiles))
 		c.JSON(http.StatusOK, gin.H{
 			"reports": allFiles,
 		})
 	})
-	
+
 	r.POST("/api/download", func(c *gin.Context) {
 		var req DownloadRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -1140,7 +1166,7 @@ func main() {
 			"files":   files,
 		})
 	})
-	
+
 	// 价值投资分析API
 	r.GET("/api/value-investment/:stockCode", func(c *gin.Context) {
 		stockCode := c.Param("stockCode")
@@ -1148,76 +1174,76 @@ func main() {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "股票代码不能为空"})
 			return
 		}
-		
+
 		fmt.Printf("开始分析股票 %s 的价值投资数据...\n", stockCode)
-		
+
 		data, err := valueAPI.AnalyzeValueInvestment(stockCode)
 		if err != nil {
 			fmt.Printf("价值投资分析失败：%v\n", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "价值投资分析失败：" + err.Error()})
 			return
 		}
-		
+
 		fmt.Printf("股票 %s 价值投资分析完成，评分：%d\n", stockCode, data.ValueScore)
 		c.JSON(http.StatusOK, gin.H{
 			"data": data,
 		})
 	})
-	
+
 	r.GET("/api/stock-info/:stockCode", func(c *gin.Context) {
 		stockCode := c.Param("stockCode")
 		if stockCode == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "股票代码不能为空"})
 			return
 		}
-		
+
 		data, err := valueAPI.GetStockBasicInfo(stockCode)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "获取股票信息失败：" + err.Error()})
 			return
 		}
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"data": data,
 		})
 	})
-	
+
 	r.GET("/api/financial-metrics/:stockCode", func(c *gin.Context) {
 		stockCode := c.Param("stockCode")
 		if stockCode == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "股票代码不能为空"})
 			return
 		}
-		
+
 		data, err := valueAPI.GetFinancialMetrics(stockCode)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "获取财务指标失败：" + err.Error()})
 			return
 		}
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"data": data,
 		})
 	})
-	
+
 	r.POST("/api/analyze-value", func(c *gin.Context) {
 		var req struct {
 			StockCodes []string `json:"stock_codes"`
 		}
-		
+
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "请求参数错误"})
 			return
 		}
-		
+
 		if len(req.StockCodes) == 0 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "股票代码列表不能为空"})
 			return
 		}
-		
+
 		var results []*ValueInvestmentData
 		var errors []string
-		
+
 		for _, stockCode := range req.StockCodes {
 			data, err := valueAPI.AnalyzeValueInvestment(stockCode)
 			if err != nil {
@@ -1226,7 +1252,7 @@ func main() {
 			}
 			results = append(results, data)
 		}
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"results": results,
 			"errors":  errors,
@@ -1240,20 +1266,20 @@ func main() {
 		var req struct {
 			StockName string `json:"stock_name"`
 		}
-		
+
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "请求参数错误"})
 			return
 		}
-		
+
 		if req.StockName == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "股票名称或代码不能为空"})
 			return
 		}
-		
+
 		// 标准化股票代码（移除空格）
 		stockCode := strings.TrimSpace(req.StockName)
-		
+
 		// 如果输入的是数字，认为是股票代码
 		if isNumeric(stockCode) {
 			// 确保股票代码格式正确
@@ -1263,7 +1289,7 @@ func main() {
 		} else {
 			// 如果是名称，需要转换为代码
 			stockCode = convertStockNameToCode(stockCode)
-			
+
 			// 如果转换失败，返回错误
 			if stockCode == "" {
 				c.JSON(http.StatusBadRequest, gin.H{
@@ -1273,9 +1299,9 @@ func main() {
 				return
 			}
 		}
-		
+
 		fmt.Printf("开始分析股票 %s 的价值投资数据...\n", stockCode)
-		
+
 		data, err := valueAPI.AnalyzeValueInvestment(stockCode)
 		if err != nil {
 			fmt.Printf("价值投资分析失败：%v\n", err)
@@ -1285,7 +1311,7 @@ func main() {
 			})
 			return
 		}
-		
+
 		fmt.Printf("股票 %s 价值投资分析完成，评分：%d\n", stockCode, data.ValueScore)
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
@@ -1450,7 +1476,7 @@ func main() {
 	})
 
 	// 启动服务器
-	serverURL := "http://localhost:8084"
+	serverURL := fmt.Sprintf("http://localhost:%d", config.Port)
 	fmt.Printf("服务器已启动，访问 %s\n", serverURL)
 
 	// 启动浏览器
@@ -1462,7 +1488,7 @@ func main() {
 		}
 	}()
 
-	r.Run(":8084")
+	r.Run(fmt.Sprintf(":%d", config.Port))
 }
 
 // isNumeric 检查字符串是否只包含数字
@@ -1522,7 +1548,7 @@ func convertStockNameToCode(name string) string {
 	if code, err := searchStockCode(name); err == nil {
 		return formatStockCodeForSina(code)
 	}
-	
+
 	// 如果API搜索失败，使用本地映射作为备选
 	stockMap := map[string]string{
 		"云南白药":   "000538",
@@ -1571,16 +1597,16 @@ func convertStockNameToCode(name string) string {
 		"国信证券":   "002736",
 		"方正证券":   "601901",
 	}
-	
+
 	if code, exists := stockMap[name]; exists {
 		return formatStockCodeForSina(code)
 	}
-	
+
 	// 如果没有找到映射，尝试直接返回（可能是用户直接输入了代码）
 	if len(name) == 6 {
 		return formatStockCodeForSina(name)
 	}
-	
+
 	// 如果所有方法都失败，返回错误
 	return ""
 }
@@ -1589,30 +1615,30 @@ func convertStockNameToCode(name string) string {
 func (api *ValueInvestmentAPI) GetStockBasicInfo(stockCode string) (*StockBasicInfo, error) {
 	// 新浪财经API
 	url := fmt.Sprintf("https://hq.sinajs.cn/list=%s", formatStockCodeForSina(stockCode))
-	
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	req.Header.Set("Referer", "https://finance.sina.com.cn")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-	
+
 	resp, err := api.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	
+
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("API请求失败: HTTP %d", resp.StatusCode)
 	}
-	
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return api.parseSinaStockData(string(body), stockCode)
 }
 
@@ -1621,94 +1647,94 @@ func (api *ValueInvestmentAPI) GetFinancialMetrics(stockCode string) (*Financial
 	// 使用新浪财经API获取财务数据
 	// 新浪财经的财务数据API
 	formattedCode := formatStockCodeForSina(stockCode)
-	
+
 	// 获取实时行情数据中包含的一些财务指标
 	url := fmt.Sprintf("https://hq.sinajs.cn/list=%s", formattedCode)
-	
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	req.Header.Set("Referer", "https://finance.sina.com.cn")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-	
+
 	resp, err := api.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	
+
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("API请求失败: HTTP %d", resp.StatusCode)
 	}
-	
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// 解析基本数据，获取一些实时指标
 	basicInfo, err := api.parseSinaStockData(string(body), stockCode)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// 使用新浪财经的财务数据API
 	// 这里我们根据不同的股票代码生成一些差异化的财务数据
 	// 在实际应用中，应该调用专门的财务数据API
-	
+
 	// 基于股票代码生成一些有差异的财务数据（模拟真实情况）
 	// 这里使用股票代码的哈希值作为随机种子
 	hash := 0
 	for _, c := range stockCode {
 		hash = hash*31 + int(c)
 	}
-	
+
 	// 使用哈希值生成差异化的财务数据
-	randSeed := float64(hash % 1000) / 1000.0
-	
+	randSeed := float64(hash%1000) / 1000.0
+
 	metrics := &FinancialMetrics{
 		// 市盈率：根据不同股票类型设定不同范围
 		PERatio: 10.0 + randSeed*30.0, // 10-40倍
-		
-		// 市净率：根据不同股票设定不同范围  
+
+		// 市净率：根据不同股票设定不同范围
 		PBRatio: 1.0 + randSeed*5.0, // 1-6倍
-		
+
 		// 市销率：根据不同股票设定不同范围
 		PSRatio: 2.0 + randSeed*8.0, // 2-10倍
-		
+
 		// 净资产收益率：根据不同股票设定不同范围
 		ROE: 5.0 + randSeed*20.0, // 5-25%
-		
+
 		// 资产负债率：根据不同股票设定不同范围
 		DebtRatio: 20.0 + randSeed*60.0, // 20-80%
-		
+
 		// 流动比率：根据不同股票设定不同范围
 		CurrentRatio: 1.0 + randSeed*3.0, // 1-4
-		
+
 		// 毛利率：根据不同股票设定不同范围
 		GrossMargin: 20.0 + randSeed*50.0, // 20-70%
-		
+
 		// 净利率：根据不同股票设定不同范围
 		NetMargin: 5.0 + randSeed*25.0, // 5-30%
-		
+
 		// 营收增长率：根据不同股票设定不同范围
 		RevenueGrowth: -5.0 + randSeed*30.0, // -5%到25%
-		
+
 		// 利润增长率：根据不同股票设定不同范围
 		ProfitGrowth: -10.0 + randSeed*40.0, // -10%到30%
-		
+
 		// 股息率：根据不同股票设定不同范围
-		DividendYield: randSeed*5.0, // 0-5%
-		
+		DividendYield: randSeed * 5.0, // 0-5%
+
 		// 每股收益：基于股价和市盈率计算
 		EPS: basicInfo.Price / (10.0 + randSeed*30.0),
-		
+
 		// 每股净资产：基于股价和市净率计算
 		BVPS: basicInfo.Price / (1.0 + randSeed*5.0),
 	}
-	
+
 	return metrics, nil
 }
 
@@ -1719,27 +1745,27 @@ func (api *ValueInvestmentAPI) AnalyzeValueInvestment(stockCode string) (*ValueI
 	if err != nil {
 		return nil, fmt.Errorf("获取股票基本信息失败: %v", err)
 	}
-	
+
 	// 获取财务指标
 	metrics, err := api.GetFinancialMetrics(stockCode)
 	if err != nil {
 		return nil, fmt.Errorf("获取财务指标失败: %v", err)
 	}
-	
+
 	// 计算价值评分
 	valueScore := api.calculateValueScore(metrics)
-	
+
 	// 生成投资建议
 	recommendation := api.generateRecommendation(valueScore, metrics)
-	
+
 	data := &ValueInvestmentData{
-		StockBasicInfo:  *basicInfo,
+		StockBasicInfo:   *basicInfo,
 		FinancialMetrics: *metrics,
-		ValueScore:      valueScore,
-		Recommendation:  recommendation,
-		AnalysisTime:    time.Now().Format("2006-01-02 15:04:05"),
+		ValueScore:       valueScore,
+		Recommendation:   recommendation,
+		AnalysisTime:     time.Now().Format("2006-01-02 15:04:05"),
 	}
-	
+
 	return data, nil
 }
 
@@ -1749,56 +1775,56 @@ func (api *ValueInvestmentAPI) parseSinaStockData(data string, stockCode string)
 	if !strings.Contains(data, "hq_str_") {
 		return nil, fmt.Errorf("无效的新浪数据格式")
 	}
-	
-	start := strings.Index(data, `"`)
+
+	start := strings.Index(data, "`")
 	if start == -1 {
 		return nil, fmt.Errorf("无法解析新浪数据")
 	}
-	
-	end := strings.LastIndex(data, `"`)
+
+	end := strings.LastIndex(data, "`")
 	if end == -1 {
 		return nil, fmt.Errorf("无法解析新浪数据")
 	}
-	
+
 	content := data[start+1 : end]
 	fields := strings.Split(content, ",")
-	
+
 	if len(fields) < 10 {
 		return nil, fmt.Errorf("新浪数据字段不足")
 	}
-	
+
 	price, err := strconv.ParseFloat(fields[3], 64)
 	if err != nil {
 		return nil, fmt.Errorf("解析价格失败: %v", err)
 	}
-	
+
 	change, err := strconv.ParseFloat(fields[4], 64)
 	if err != nil {
 		change = 0
 	}
-	
+
 	changePct, err := strconv.ParseFloat(fields[5], 64)
 	if err != nil {
 		changePct = 0
 	}
-	
+
 	volume, err := strconv.ParseInt(fields[8], 10, 64)
 	if err != nil {
 		volume = 0
 	}
-	
+
 	amount, err := strconv.ParseFloat(fields[9], 64)
 	if err != nil {
 		amount = 0
 	}
-	
+
 	// 获取股票名称，并确保正确处理中文
 	name := fields[0]
 	if name == "" {
 		// 如果名称为空，使用股票代码代替
 		name = stockCode
 	}
-	
+
 	return &StockBasicInfo{
 		Code:      stockCode,
 		Name:      name,
@@ -1807,13 +1833,14 @@ func (api *ValueInvestmentAPI) parseSinaStockData(data string, stockCode string)
 		ChangePct: changePct,
 		Volume:    volume,
 		Amount:    amount,
-	}, nil
+	},
+	nil
 }
 
 // calculateValueScore 计算价值评分 (0-100分)
 func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) int {
 	score := 0
-	
+
 	// P/E比率评分 (15-25倍为最佳)
 	if metrics.PERatio >= 15 && metrics.PERatio <= 25 {
 		score += 20
@@ -1822,7 +1849,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	} else if metrics.PERatio > 0 {
 		score += 10
 	}
-	
+
 	// ROE评分 (15%以上为优秀)
 	if metrics.ROE >= 15 {
 		score += 20
@@ -1831,7 +1858,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	} else if metrics.ROE >= 5 {
 		score += 10
 	}
-	
+
 	// 负债率评分 (低于50%为健康)
 	if metrics.DebtRatio < 30 {
 		score += 15
@@ -1840,7 +1867,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	} else if metrics.DebtRatio < 70 {
 		score += 5
 	}
-	
+
 	// 流动比率评分 (大于1.5为健康)
 	if metrics.CurrentRatio >= 2 {
 		score += 10
@@ -1849,7 +1876,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	} else if metrics.CurrentRatio >= 1 {
 		score += 5
 	}
-	
+
 	// 成长性评分
 	if metrics.RevenueGrowth >= 10 {
 		score += 10
@@ -1858,7 +1885,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	} else if metrics.RevenueGrowth >= 0 {
 		score += 5
 	}
-	
+
 	if metrics.ProfitGrowth >= 15 {
 		score += 10
 	} else if metrics.ProfitGrowth >= 8 {
@@ -1866,7 +1893,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	} else if metrics.ProfitGrowth >= 0 {
 		score += 5
 	}
-	
+
 	// 股息率评分
 	if metrics.DividendYield >= 3 {
 		score += 5
@@ -1875,7 +1902,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	} else if metrics.DividendYield > 0 {
 		score += 1
 	}
-	
+
 	// 确保分数在0-100范围内
 	if score > 100 {
 		score = 100
@@ -1883,7 +1910,7 @@ func (api *ValueInvestmentAPI) calculateValueScore(metrics *FinancialMetrics) in
 	if score < 0 {
 		score = 0
 	}
-	
+
 	return score
 }
 
